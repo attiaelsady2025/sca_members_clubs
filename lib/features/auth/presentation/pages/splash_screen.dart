@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sca_members_clubs/core/theme/app_colors.dart';
@@ -57,17 +56,17 @@ class _SplashScreenState extends State<SplashScreen> {
                         ),
                       ],
                     ),
-                    child: const Icon(
-                      Icons.anchor,
-                      size: 80,
-                      color: AppColors.primary,
+                    child: Image.asset(
+                      'assets/images/logo.png',
+                      width: 80,
+                      height: 80,
                     ),
                   ),
                 );
               },
             ),
             const SizedBox(height: 32),
-            
+
             // Text with Fade In
             TweenAnimationBuilder(
               tween: Tween<double>(begin: 0, end: 1),
@@ -75,41 +74,47 @@ class _SplashScreenState extends State<SplashScreen> {
               builder: (context, value, child) {
                 return Opacity(
                   opacity: value,
-                  child: Column(
-                    children: [
-                      Text(
-                        "نادي هيئة قناة السويس",
-                        style: GoogleFonts.cairo(
-                          color: Colors.white,
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 1.2,
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      children: [
+                        Text(
+                          "النادي العام لهيئة قناة السويس",
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.cairo(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.2,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 8),
-                      Container(
-                        width: 150,
-                        height: 2,
-                        decoration: BoxDecoration(
-                          color: AppColors.accent,
-                          borderRadius: BorderRadius.circular(2),
+                        const SizedBox(height: 8),
+                        Container(
+                          width: 150,
+                          height: 2,
+                          decoration: BoxDecoration(
+                            color: AppColors.accent,
+                            borderRadius: BorderRadius.circular(2),
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        "Suez Canal Authority Club",
-                        style: GoogleFonts.cairo(
-                          color: Colors.white70,
-                          fontSize: 14,
-                          letterSpacing: 2,
+                        const SizedBox(height: 8),
+                        Text(
+                          "Suez Canal Authority Club",
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.cairo(
+                            color: Colors.white70,
+                            fontSize: 14,
+                            letterSpacing: 2,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 );
               },
             ),
-            
+
             const SizedBox(height: 60),
             const CircularProgressIndicator(color: AppColors.accent),
           ],

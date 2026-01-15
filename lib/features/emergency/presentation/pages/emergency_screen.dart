@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sca_members_clubs/core/theme/app_colors.dart';
-import 'package:sca_members_clubs/core/widgets/primary_button.dart';
 import 'package:sca_members_clubs/core/widgets/sca_app_bar.dart';
 
 class EmergencyScreen extends StatefulWidget {
@@ -11,7 +10,8 @@ class EmergencyScreen extends StatefulWidget {
   State<EmergencyScreen> createState() => _EmergencyScreenState();
 }
 
-class _EmergencyScreenState extends State<EmergencyScreen> with SingleTickerProviderStateMixin {
+class _EmergencyScreenState extends State<EmergencyScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _pulseController;
   late Animation<double> _pulseAnimation;
 
@@ -69,12 +69,16 @@ class _EmergencyScreenState extends State<EmergencyScreen> with SingleTickerProv
                       color: AppColors.error,
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(Icons.emergency, size: 60, color: Colors.white),
+                    child: const Icon(
+                      Icons.emergency,
+                      size: 60,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
               const SizedBox(height: 48),
-              
+
               Text(
                 "هل تحتاج إلى مساعدة عاجلة؟",
                 style: GoogleFonts.cairo(
@@ -93,7 +97,7 @@ class _EmergencyScreenState extends State<EmergencyScreen> with SingleTickerProv
                 ),
                 textAlign: TextAlign.center,
               ),
-              
+
               const SizedBox(height: 50),
 
               // Security Call Button
@@ -108,7 +112,7 @@ class _EmergencyScreenState extends State<EmergencyScreen> with SingleTickerProv
                 },
               ),
               const SizedBox(height: 16),
-              
+
               // Ambulance Call Button
               _buildEmergencyButton(
                 context,
@@ -122,7 +126,7 @@ class _EmergencyScreenState extends State<EmergencyScreen> with SingleTickerProv
               ),
 
               const SizedBox(height: 40),
-              
+
               // Location Info
               Container(
                 padding: const EdgeInsets.all(20),
@@ -175,7 +179,8 @@ class _EmergencyScreenState extends State<EmergencyScreen> with SingleTickerProv
     );
   }
 
-  Widget _buildEmergencyButton(BuildContext context, {
+  Widget _buildEmergencyButton(
+    BuildContext context, {
     required String label,
     required IconData icon,
     required Color color,
@@ -229,7 +234,11 @@ class _EmergencyScreenState extends State<EmergencyScreen> with SingleTickerProv
                   ],
                 ),
               ),
-              Icon(Icons.arrow_forward_ios, color: color.withOpacity(0.3), size: 16),
+              Icon(
+                Icons.arrow_forward_ios,
+                color: color.withOpacity(0.3),
+                size: 16,
+              ),
             ],
           ),
         ),
@@ -241,8 +250,14 @@ class _EmergencyScreenState extends State<EmergencyScreen> with SingleTickerProv
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("تأكيد الاتصال", style: GoogleFonts.cairo(fontWeight: FontWeight.bold)),
-        content: Text("هل أنت متأكد من الاتصال بـ $name؟\n($number)", style: GoogleFonts.cairo()),
+        title: Text(
+          "تأكيد الاتصال",
+          style: GoogleFonts.cairo(fontWeight: FontWeight.bold),
+        ),
+        content: Text(
+          "هل أنت متأكد من الاتصال بـ $name؟\n($number)",
+          style: GoogleFonts.cairo(),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -251,11 +266,13 @@ class _EmergencyScreenState extends State<EmergencyScreen> with SingleTickerProv
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
             onPressed: () {
-               Navigator.pop(context);
-               // In real app: launchUrl("tel:$number")
-               ScaffoldMessenger.of(context).showSnackBar(
-                 SnackBar(content: Text("جاري الاتصال...", style: GoogleFonts.cairo())),
-               );
+              Navigator.pop(context);
+              // In real app: launchUrl("tel:$number")
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text("جاري الاتصال...", style: GoogleFonts.cairo()),
+                ),
+              );
             },
             child: Text("اتصال", style: GoogleFonts.cairo()),
           ),

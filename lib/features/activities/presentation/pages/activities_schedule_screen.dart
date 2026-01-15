@@ -7,18 +7,27 @@ class ActivitiesScheduleScreen extends StatefulWidget {
   const ActivitiesScheduleScreen({super.key});
 
   @override
-  State<ActivitiesScheduleScreen> createState() => _ActivitiesScheduleScreenState();
+  State<ActivitiesScheduleScreen> createState() =>
+      _ActivitiesScheduleScreenState();
 }
 
-class _ActivitiesScheduleScreenState extends State<ActivitiesScheduleScreen> with SingleTickerProviderStateMixin {
+class _ActivitiesScheduleScreenState extends State<ActivitiesScheduleScreen>
+    with SingleTickerProviderStateMixin {
   late Future<List<Map<String, dynamic>>> _activitiesFuture;
   late TabController _tabController;
+  String? _clubId;
 
   @override
   void initState() {
     super.initState();
-    _activitiesFuture = FirebaseService().getActivities();
     _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _clubId = ModalRoute.of(context)?.settings.arguments as String?;
+    _activitiesFuture = FirebaseService().getActivities(clubId: _clubId);
   }
 
   @override
@@ -45,10 +54,7 @@ class _ActivitiesScheduleScreenState extends State<ActivitiesScheduleScreen> wit
       ),
       body: TabBarView(
         controller: _tabController,
-        children: [
-          _buildActivityList("sports"),
-          _buildActivityList("arts"),
-        ],
+        children: [_buildActivityList("sports"), _buildActivityList("arts")],
       ),
     );
   }
@@ -60,12 +66,16 @@ class _ActivitiesScheduleScreenState extends State<ActivitiesScheduleScreen> wit
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
-        
+
         final allActivities = snapshot.data ?? [];
-        final activities = allActivities.where((a) => a['category'] == category).toList();
+        final activities = allActivities
+            .where((a) => a['category'] == category)
+            .toList();
 
         if (activities.isEmpty) {
-          return Center(child: Text("لا توجد أنشطة متاحة", style: GoogleFonts.cairo()));
+          return Center(
+            child: Text("لا توجد أنشطة متاحة", style: GoogleFonts.cairo()),
+          );
         }
 
         return ListView.separated(
@@ -101,11 +111,17 @@ class _ActivitiesScheduleScreenState extends State<ActivitiesScheduleScreen> wit
                           color: AppColors.textPrimary,
                         ),
                       ),
-                      Icon(Icons.sports_handball, color: AppColors.primary.withOpacity(0.5)),
+                      Icon(
+                        Icons.sports_handball,
+                        color: AppColors.primary.withOpacity(0.5),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 12),
-                  _buildInfoRow(Icons.calendar_today, activity['days'].join(" - ")),
+                  _buildInfoRow(
+                    Icons.calendar_today,
+                    activity['days'].join(" - "),
+                  ),
                   const SizedBox(height: 8),
                   _buildInfoRow(Icons.access_time, activity['time']),
                   const SizedBox(height: 8),
@@ -116,12 +132,18 @@ class _ActivitiesScheduleScreenState extends State<ActivitiesScheduleScreen> wit
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton(
-                      onPressed: () => _showSubscriptionDialog(context, activity),
+                      onPressed: () =>
+                          _showSubscriptionDialog(context, activity),
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(color: AppColors.primary),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
-                      child: Text("طلب اشتراك", style: GoogleFonts.cairo(color: AppColors.primary)),
+                      child: Text(
+                        "طلب اشتراك",
+                        style: GoogleFonts.cairo(color: AppColors.primary),
+                      ),
                     ),
                   ),
                 ],
@@ -133,7 +155,10 @@ class _ActivitiesScheduleScreenState extends State<ActivitiesScheduleScreen> wit
     );
   }
 
-  void _showSubscriptionDialog(BuildContext context, Map<String, dynamic> activity) {
+  void _showSubscriptionDialog(
+    BuildContext context,
+    Map<String, dynamic> activity,
+  ) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -169,7 +194,9 @@ class _ActivitiesScheduleScreenState extends State<ActivitiesScheduleScreen> wit
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
             ),
             child: Text("تأكيد", style: GoogleFonts.cairo(color: Colors.white)),
           ),
@@ -205,8 +232,14 @@ class _ActivitiesScheduleScreenState extends State<ActivitiesScheduleScreen> wit
       children: [
         Icon(icon, size: 16, color: Colors.grey),
         const SizedBox(width: 8),
-        Text("$label: ", style: GoogleFonts.cairo(color: Colors.grey, fontSize: 13)),
-        Text(value, style: GoogleFonts.cairo(fontWeight: FontWeight.bold, fontSize: 13)),
+        Text(
+          "$label: ",
+          style: GoogleFonts.cairo(color: Colors.grey, fontSize: 13),
+        ),
+        Text(
+          value,
+          style: GoogleFonts.cairo(fontWeight: FontWeight.bold, fontSize: 13),
+        ),
       ],
     );
   }

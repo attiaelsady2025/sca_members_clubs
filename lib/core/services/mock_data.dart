@@ -22,22 +22,29 @@ class MockData {
 
   // Active Visitors Details (New: For tracking)
   static final List<Map<String, dynamic>> activeVisitors = [
-    {"id": "v1", "name": "محمود أحمد", "entry_time": "10:30 ص", "invitation_id": "inv1"},
-    {"id": "v2", "name": "علي حسن", "entry_time": "11:15 ص", "invitation_id": "inv2"},
+    {
+      "id": "v1",
+      "name": "محمود أحمد",
+      "entry_time": "10:30 ص",
+      "invitation_id": "inv1",
+    },
+    {
+      "id": "v2",
+      "name": "علي حسن",
+      "entry_time": "11:15 ص",
+      "invitation_id": "inv2",
+    },
   ];
 
   // Registered Users for Login
   static final List<Map<String, dynamic>> registeredUsers = [
-    {
-      "identifier": "12345678",
-      "password": "123",
-      "profile": memberProfile,
-    },
+    {"identifier": "12345678", "password": "123", "profile": memberProfile},
     {
       "identifier": "atia@example.com",
       "password": "password123",
       "profile": memberProfile,
     },
+    {"identifier": "user", "password": "123", "profile": memberProfile},
     {
       "identifier": "admin",
       "password": "admin",
@@ -71,11 +78,7 @@ class MockData {
     {
       "identifier": "security",
       "password": "sec",
-      "profile": {
-        ...memberProfile,
-        "name": "مسؤول الأمن",
-        "role": "security",
-      },
+      "profile": {...memberProfile, "name": "مسؤول الأمن", "role": "security"},
     },
   ];
 
@@ -84,7 +87,8 @@ class MockData {
     {
       "id": "c1",
       "name": "نادي التجديف (الإسماعيلية)",
-      "image": "assets/images/club_rowing.jpg",
+      "image":
+          "https://images.unsplash.com/photo-1544620347-c4fd4a3d5962?auto=format&fit=crop&q=80&w=1000",
       "description": "الرياضات المائية والأنشطة.",
       "icon": Icons.rowing,
       "color": Colors.teal,
@@ -94,17 +98,20 @@ class MockData {
     {
       "id": "c2",
       "name": "نادي الفيروز (بورفؤاد)",
-      "image": "assets/images/club_social.jpg",
+      "image":
+          "https://images.unsplash.com/photo-1540339832862-4745591b2696?auto=format&fit=crop&q=80&w=1000",
       "description": "استمتع بأفضل الأوقات العائلية في النادي الاجتماعي.",
       "icon": Icons.people,
       "color": Colors.blue,
       "governorate": "بورسعيد",
-      "google_maps_url": "https://maps.google.com/?q=SCA+Social+Club+Port+Fouad",
+      "google_maps_url":
+          "https://maps.google.com/?q=SCA+Social+Club+Port+Fouad",
     },
     {
       "id": "c3",
       "name": "نادي الجولف (بورسعيد)",
-      "image": "assets/images/club_golf.jpg",
+      "image":
+          "https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&q=80&w=1000",
       "description": "ملاعب عالمية لمحبي الجولف.",
       "icon": Icons.golf_course,
       "color": Colors.green,
@@ -114,7 +121,8 @@ class MockData {
     {
       "id": "c4",
       "name": "نادي الشاطئ (السويس)",
-      "image": "assets/images/club_social.jpg",
+      "image":
+          "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=1000",
       "description": "تجربة صيفية فريدة على البحر الأحمر.",
       "icon": Icons.beach_access,
       "color": Colors.orange,
@@ -129,85 +137,74 @@ class MockData {
       "id": "n1",
       "title": "افتتاح حمام السباحة الأوليمبي الجديد",
       "date": "10 يناير 2026",
-      "image": "assets/images/pool.jpg",
-      "description": "يسر إدارة النادي الإعلان عن افتتاح حمام السباحة الأوليمبي بعد التجديدات الشاملة التي شملت أنظمة الفلترة والتدفئة، لضمان أعلى مستويات الأمان والرفاهية للأعضاء.",
-      "content": "تم الانتهاء من كافة أعمال الصيانة الدورية والتطوير الشامل لحمام السباحة الأوليمبي. تتضمن التجهيزات الجديدة أنظمة رقابة متطورة وغرف تغيير ملابس حديثة. يفتح الحمام أبوابه يومياً من الساعة السابعة صباحاً وحتى العاصرة مساءً.",
+      "image":
+          "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?q=80&w=800",
+      "description":
+          "يسر إدارة النادي الإعلان عن افتتاح حمام السباحة الأوليمبي بعد التجديدات الشاملة التي شملت أنظمة الفلترة والتدفئة.",
+      "content":
+          "تم الانتهاء من كافة أعمال الصيانة الدورية والتطوير الشامل لحمام السباحة الأوليمبي. تتضمن التجهيزات الجديدة أنظمة رقابة متطورة وغرف تغيير ملابس حديثة. يفتح الحمام أبوابه يومياً من الساعة السابعة صباحاً وحتى العاشرة مساءً.",
       "club_id": "c1",
     },
     {
       "id": "n2",
       "title": "بطولة التنس السنوية",
       "date": "15 فبراير 2026",
-      "image": "assets/images/tennis.jpg",
-      "description": "بدء التسجيل في بطولة التنس السنوية للأعضاء بفئات الناشئين والكبار، مع جوائز قيمة للفائزين الأوائل.",
-      "content": "تدعو اللجنة الرياضية السادة الأعضاء للمشاركة في البطولة الكبرى للتنس. ستقام المباريات على مدار أسبوع كامل بنظام المجموعات. التسجيل متاح حالياً لدى مكاتب النشاط الرياضي وحتى نهاية شهر يناير.",
+      "image":
+          "https://images.unsplash.com/photo-1599474924187-334a4ae5bd3c?q=80&w=800",
+      "description":
+          "بدء التسجيل في بطولة التنس السنوية للأعضاء بفئات الناشئين والكبار، مع جوائز قيمة للفائزين الأوائل.",
+      "content":
+          "تدعو اللجنة الرياضية السادة الأعضاء للمشاركة في البطولة الكبرى للتنس. ستقام المباريات على مدار أسبوع كامل بنظام المجموعات. التسجيل متاح حالياً لدى مكاتب النشاط الرياضي وحتى نهاية شهر يناير.",
       "club_id": "c1",
     },
     {
       "id": "n3",
       "title": "رحلة اليوم الواحد لمدينة الجلالة",
       "date": "20 يناير 2026",
-      "image": "assets/images/galala.jpg",
-      "description": "تنظم اللجنة الاجتماعية رحلة ترفيهية لمدينة الجلالة العالمية تشمل زيارة التلفريك والمدينة المائية.",
-      "content": "تشمل الرحلة الانتقالات بأتوبيسات حديثة، وجبة غداء فاخرة، وتذاكر دخول كافة المزارات. الحجز متاح من خلال التطبيق أو السكرتارية.",
+      "image":
+          "https://images.unsplash.com/photo-1544620347-c4fd4a3d5962?q=80&w=800",
+      "description":
+          "تنظم اللجنة الاجتماعية رحلة ترفيهية لمدينة الجلالة العالمية تشمل زيارة التلفريك والمدينة المائية.",
+      "content":
+          "تشمل الرحلة الانتقالات بأتوبيسات حديثة، وجبة غداء فاخرة، وتذاكر دخول كافة المزارات. الحجز متاح من خلال التطبيق أو السكرتارية.",
       "club_id": "c2",
     },
     {
       "id": "n4",
-      "title": "تطوير ملاعب الكروكية",
+      "title": "تطوير ملاعب الكروقية",
       "date": "5 يناير 2026",
-      "image": "assets/images/croquet.jpg",
-      "description": "انتهاء أعمال تطوير الإضاءة والنجيل الطبيعي بملاعب الكروكية بنادي التجديف.",
-      "content": "أصبح بإمكان الأعضاء ممارسة رياضة الكروكية ليلاً بعد تركيب أعمدة الإنارة الليد الحديثة وتطوير منطقة الجلوس المحيطة بالملاعب.",
+      "image":
+          "https://images.unsplash.com/photo-1531415074968-036ba1b575da?q=80&w=800",
+      "description":
+          "انتهاء أعمال تطوير الإضاءة والنجيل الطبيعي بملاعب الكروكية بنادي التجديف.",
+      "content":
+          "أصبح بإمكان الأعضاء ممارسة رياضة الكروكية ليلاً بعد تركيب أعمدة الإنارة الليد الحديثة وتطوير منطقة الجلوس المحيطة بالملاعب.",
       "club_id": "c1",
     },
   ];
 
-  // Events
+  // Events (Upcoming)
   static final List<Map<String, dynamic>> events = [
     {
       "id": "e1",
-      "title": "حفل شم النسيم السنوي",
-      "date": "20 أبريل 2026",
-      "time": "05:00 م",
-      "location": "الحديقة الرئيسية",
-      "price": "150 ج.م",
-      "description": "حفل عائلي يضم فقرات ترفيهية للأطفال، عروض ساحر، وفرقة فنون شعبية، بالإضافة إلى وجبات شم النسيم التقليدية.",
-      "content": "استعدوا لليوم الأكثر مرحاً في العام! الحفل يتضمن مسابقات لتلوين البيض، فقرة عرائس، وفقرة غنائية متميزة. التذاكر متوفرة حالياً بمكاتب الأمن بالبوابة الرئيسية.",
+      "title": "حفل أم كلثوم (سينما)",
+      "date": "25 يناير 2026",
+      "time": "08:00 مساءً",
+      "location": "المسرح الكبير - النادي الاجتماعي",
+      "price": "50 جنيه",
+      "description": "عرض سينمائي لأجمل حفلات كوكب الشرق أم كلثوم.",
       "club_id": "c1",
     },
     {
       "id": "e2",
-      "title": "ماراثون الجري الخيري",
-      "date": "1 مارس 2026",
-      "time": "08:00 ص",
-      "location": "الكورنيش",
+      "title": "ندوة التوعية الغذائية",
+      "date": "1 فبراير 2026",
+      "time": "06:00 مساءً",
+      "location": "قاعة المؤتمرات - نادي التجديف",
       "price": "مجاناً",
-      "description": "انضم إلينا في ماراثون الجري لدعم الجمعيات الخيرية بمدن القناة، النشاط مناسب لجميع الأعمار.",
-      "content": "نقطة البداية مقابل البوابة رقم 1. سيتم توزيع قمصان الماراثون ومياه للشرب لجميع المشاركين. يوجد طاقم فني وإسعاف لمرافقة الماراثون لضمان سلامة الجميع.",
+      "description":
+          "ندوة مجانية للأعضاء للتعريف بأسس التغذية السليمة للرياضيين.",
       "club_id": "c2",
-    },
-    {
-      "id": "e3",
-      "title": "ندوة التوعية الرقمية",
-      "date": "25 يناير 2026",
-      "time": "06:30 م",
-      "location": "قاعة المؤتمرات",
-      "price": "مجاناً",
-      "description": "ندوة حول كيفية حماية البيانات الشخصية والتعامل الآمن مع التطبيقات الإلكترونية.",
-      "content": "يلقي الندوة نخبة من خبراء أمن المعلومات بالهيئة. الدعوة عامة لكافة الأعضاء وأسرهم لزيادة الوعي التقني.",
-      "club_id": "c1",
-    },
-    {
-      "id": "e4",
-      "title": "يوم الصيد المفتوح",
-      "date": "30 يناير 2026",
-      "time": "07:00 ص",
-      "location": "رصيف النادي",
-      "price": "50 ج.م",
-      "description": "مسابقة ودية لأعضاء نادي التجديف في صيد الأسماك مع جوائز لأثقل سمكة.",
-      "content": "يسمح باستخدام أدوات الصيد الشخصية، كما يوفر النادي طعوم وأدوات للمبتدئين. يشرف على اليوم طاقم الإنقاذ النهري.",
-      "club_id": "c1",
     },
   ];
 
@@ -217,28 +214,36 @@ class MockData {
       "id": "p1",
       "title": "خصم 20% على المطاعم",
       "subtitle": "استمتع بوجباتك المفضلة",
-      "image": "assets/images/promo_food.jpg",
+      "image":
+          "https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=800",
       "color": "0xFF003A8F",
-      "description": "عرض خاص للأعضاء العاملين فقط، خصم مباشر على كافة المشروبات والمأكولات طوال شهر يناير.",
-      "content": "استمتع بتجربة طعام استثنائية في أرقى مطاعم النادي. الخصم ساري على الطلبات الداخلية وخدمة التوصيل داخل النادي. العرض لا يشمل الحفلات الخاصة.",
+      "description": "استمتع بوجباتك المفضلة مع خصم حصري للأعضاء.",
+      "content":
+          "هذا العرض سارٍ لجميع أعضاء أندية هيئة قناة السويس في كافة المطاعم والكافيهات التابعة للهيئة. الخصم يشمل كافة المأكولات والمشروبات.",
     },
     {
       "id": "p2",
       "title": "بطولة الشطرنج السنوية",
       "subtitle": "بادر بالتسجيل الآن",
-      "image": "assets/images/promo_chess.jpg",
+      "image":
+          "https://images.unsplash.com/photo-1529699211952-734e80c4d42b?q=80&w=800",
       "color": "0xFFC9A24D",
-      "description": "هل أنت بطل الشطرنج القادم؟ شارك في البطولة السنوية وتحدى أقوى اللاعبين.",
-      "content": "ستقام البطولة بنظام السويس وتخضع لقواعد الاتحاد الدولي للشطرنج. يوجد فئات عمرية مختلفة وجوائز مالية ودروع تذكارية. يقفل باب الحجز فور اكتمال العدد.",
+      "description":
+          "هل أنت بطل الشطرنج القادم؟ شارك في البطولة السنوية وتحدى أقوى اللاعبين.",
+      "content":
+          "تنظم اللجنة الرياضية بطولة الشطرنج السنوية الكبرى. البطولة مفتوحة لكافة الأعمار والمستويات. التسجيل متاح الآن وحتى نهاية الأسبوع.",
     },
     {
       "id": "p3",
       "title": "تجديد العضوية أونلاين",
       "subtitle": "وفر وقتك ومجهودك",
-      "image": "assets/images/promo_renew.jpg",
+      "image":
+          "https://images.unsplash.com/photo-1563013544-824ae1b704d3?q=80&w=800",
       "color": "0xFF2E7D32",
-      "description": "خدمة جديدة تم إطلاقها لتسهيل الدفع والتجديد الإلكتروني دون الحاجة لزيارة مقر الإدارة.",
-      "content": "الآن ومن خلال تطبيق الهيئة، يمكنك سداد الاشتراك السنوي والرسوم الإدارية واستلام بطاقة العضوية الرقمية فوراً. الخدمة متاحة على مدار الساعة وتدعم كافة البطاقات البنكية.",
+      "description":
+          "يمكنك الآن تجديد عضويتك السنوية من خلال التطبيق بكل سهولة.",
+      "content":
+          "في إطار التحول الرقمي للهيئة، نطلق خدمة تجديد العضوية وسداد الاشتراكات عبر التطبيق. لا حاجة للانتظار في الطوابير، سدد عضويتك في ثوانٍ.",
     },
   ];
 
@@ -290,7 +295,7 @@ class MockData {
       "count": 5,
       "date": "2026-01-10",
       "status": "pending",
-      "club_id": "c1"
+      "club_id": "c1",
     },
     {
       "id": "req2",
@@ -300,7 +305,7 @@ class MockData {
       "count": 10,
       "date": "2026-01-09",
       "status": "approved",
-      "club_id": "c2"
+      "club_id": "c2",
     },
   ];
 
@@ -414,55 +419,128 @@ class MockData {
   ];
 
   // Bookings
+  // Bookings
   static final List<Map<String, dynamic>> bookings = [
     {
       "id": "b1",
       "service_name": "ملعب كرة قدم خماسي",
-      "date": "12 يناير 2026",
+      "date": "2026-01-12",
       "time": "06:00 م",
       "status": "مؤكد",
       "price": "150 ج.م",
       "club_id": "c1",
-      "type": "sports", // sports, social
+      "type": "sports",
     },
     {
-      "id": "b2",
-      "service_name": "تجديد اشتراك سنوي",
-      "date": "15 ديسمبر 2025",
-      "time": "---",
+      "id": "b5",
+      "service_name": "جلسة تصوير فوتوغرافي",
+      "date": "2026-01-20",
+      "time": "12:00 م",
+      "status": "مؤكد",
+      "price": "500 ج.م",
+      "club_id": "c2",
+      "type": "photo_session",
+      "is_self_booking": true,
+      "attendees_count": 3,
+    },
+    {
+      "id": "b6",
+      "service_name": "تراك الجري",
+      "date": "2026-01-14",
+      "time": "06:00 ص",
       "status": "مكتمل",
-      "price": "3500 ج.م",
+      "price": "مجاناً",
       "club_id": "c1",
-      "type": "membership",
+      "type": "sports",
     },
     {
-      "id": "b3",
-      "service_name": "حجز طاولة مطعم",
-      "date": "18 يناير 2026",
-      "time": "08:00 م",
-      "status": "قيد الانتظار",
+      "id": "b7",
+      "service_name": "صالة الألعاب الرياضية (Gym)",
+      "date": "2026-01-15",
+      "time": "05:00 م",
+      "status": "مؤكد",
       "price": "50 ج.م",
       "club_id": "c1",
-      "type": "dining",
+      "type": "gym",
     },
     {
-      "id": "b4",
-      "service_name": "تذكرة دخول ضيف",
-      "date": "10 يناير 2026",
-      "time": "10:00 ص",
-      "status": "مؤكد",
-      "price": "30 ج.م",
+      "id": "b8",
+      "service_name": "ملعب تنس",
+      "date": "2026-01-16",
+      "time": "04:00 م",
+      "status": "قيد الانتظار",
+      "price": "100 ج.م",
       "club_id": "c1",
-      "type": "social",
+      "type": "sports",
+    },
+    {
+      "id": "b9",
+      "service_name": "حمام السباحة",
+      "date": "2026-01-13",
+      "time": "10:00 ص",
+      "status": "مكتمل",
+      "price": "75 ج.م",
+      "club_id": "c1",
+      "type": "pool",
+    },
+    {
+      "id": "b10",
+      "service_name": "ملعب بادل",
+      "date": "2026-01-22",
+      "time": "09:00 م",
+      "status": "مؤكد",
+      "price": "200 ج.م",
+      "club_id": "c1",
+      "type": "padel",
+    },
+    {
+      "id": "b11",
+      "service_name": "تنس",
+      "date": "2026-01-14",
+      "time": "05:00 م",
+      "status": "مؤكد",
+      "price": "100 ج.م",
+      "club_id": "c1",
+      "type": "sports",
+    },
+    {
+      "id": "b12",
+      "service_name": "سباحة",
+      "date": "2026-01-15",
+      "time": "09:00 ص",
+      "status": "مكتمل",
+      "price": "50 ج.م",
+      "club_id": "c1",
+      "type": "sports",
+    },
+    {
+      "id": "b13",
+      "service_name": "إسكواش",
+      "date": "2026-01-16",
+      "time": "06:00 م",
+      "status": "قيد الانتظار",
+      "price": "120 ج.م",
+      "club_id": "c1",
+      "type": "sports",
+    },
+    {
+      "id": "b14",
+      "service_name": "بادل",
+      "date": "2026-01-17",
+      "time": "08:00 م",
+      "status": "مؤكد",
+      "price": "200 ج.م",
+      "club_id": "c1",
+      "type": "sports",
     },
   ];
 
   // Membership Types
   static final List<String> membershipTypes = [
-     "عضو عامل",
-     "عضو تابع",
-     "عضو معاشات",
-     "عضو خارجى",
+    "عضو عامل",
+    "عضو تابع",
+    "عضو معاشات",
+    "عضو خارجى",
   ];
 
   // Map Locations (Relative coordinates 0.0 to 1.0)
@@ -560,6 +638,7 @@ class MockData {
       "location": "صالة الألعاب القتالية",
       "coach": "كابتن/ محمد صلاح",
       "category": "sports",
+      "club_id": "c1",
     },
     {
       "id": "a2",
@@ -569,6 +648,7 @@ class MockData {
       "location": "حمام السباحة المغطى",
       "coach": "كابتن/ سارة أحمد",
       "category": "sports",
+      "club_id": "c1",
     },
     {
       "id": "a3",
@@ -578,15 +658,17 @@ class MockData {
       "location": "المبنى الاجتماعي - الدور الثاني",
       "coach": "أ/ نهى كمال",
       "category": "arts",
+      "club_id": "c2",
     },
     {
       "id": "a4",
       "name": "كرة القدم (أكاديمية)",
       "days": ["يومياً"],
       "time": "04:00 م - 06:00 م",
-      "location": "الملاعب الفرعية",
+      "location": "المبنى العام",
       "coach": "كابتن/ حسن شحاتة",
       "category": "sports",
+      "club_id": "c2",
     },
     {
       "id": "a5",
@@ -596,6 +678,7 @@ class MockData {
       "location": "حمام السباحة الأوليمبي",
       "coach": "كابتن/ أحمد حلمي",
       "category": "sports",
+      "club_id": "c1",
     },
     {
       "id": "a6",
@@ -605,6 +688,7 @@ class MockData {
       "location": "المكتبة",
       "coach": "أ/ محمود يحيى",
       "category": "arts",
+      "club_id": "c2",
     },
   ];
 
@@ -616,10 +700,30 @@ class MockData {
 
   // Facility Courts & Booking Slots
   static final List<Map<String, dynamic>> courts = [
-    {"id": "crt1", "name": "ملعب تنس 1", "type": "tennis", "image": "assets/images/court_tennis.jpg"},
-    {"id": "crt2", "name": "ملعب تنس 2", "type": "tennis", "image": "assets/images/court_tennis.jpg"},
-    {"id": "crt3", "name": "ملعب بادل 1", "type": "padel", "image": "assets/images/court_padel.jpg"},
-    {"id": "crt4", "name": "ملعب كرة قدم 1", "type": "football", "image": "assets/images/court_football.jpg"},
+    {
+      "id": "crt1",
+      "name": "ملعب تنس 1",
+      "type": "tennis",
+      "image": "assets/images/court_tennis.jpg",
+    },
+    {
+      "id": "crt2",
+      "name": "ملعب تنس 2",
+      "type": "tennis",
+      "image": "assets/images/court_tennis.jpg",
+    },
+    {
+      "id": "crt3",
+      "name": "ملعب بادل 1",
+      "type": "padel",
+      "image": "assets/images/court_padel.jpg",
+    },
+    {
+      "id": "crt4",
+      "name": "ملعب كرة قدم 1",
+      "type": "football",
+      "image": "assets/images/court_football.jpg",
+    },
   ];
 
   static final Map<String, List<Map<String, dynamic>>> bookingSlots = {
@@ -640,7 +744,8 @@ class MockData {
     {
       "id": "not1",
       "title": "حجز ملعب القربب",
-      "message": "تذكير: موعد حجز ملعب كرة القدم الخماسي الخاص بك سيبدأ بعد 30 دقيقة.",
+      "message":
+          "تذكير: موعد حجز ملعب كرة القدم الخماسي الخاص بك سيبدأ بعد 30 دقيقة.",
       "time": "منذ 10 دقائق",
       "type": "booking", // booking, event, emergency, general
       "is_read": false,
@@ -648,7 +753,8 @@ class MockData {
     {
       "id": "not2",
       "title": "فعالية جديدة بالنادي",
-      "message": "تم الإعلان عن رحلة اليوم الواحد لمدينة الجلالة. بادر بالحجز الآن عبر قسم الفعاليات.",
+      "message":
+          "تم الإعلان عن رحلة اليوم الواحد لمدينة الجلالة. بادر بالحجز الآن عبر قسم الفعاليات.",
       "time": "منذ ساعتين",
       "type": "event",
       "is_read": true,
@@ -656,7 +762,8 @@ class MockData {
     {
       "id": "not3",
       "title": "تعليمات أمنية هامة",
-      "message": "يرجى من السادة الأعضاء الالتزام بأماكن الانتظار المخصصة للسيارات لتسهيل حركة المرور داخل النادي.",
+      "message":
+          "يرجى من السادة الأعضاء الالتزام بأماكن الانتظار المخصصة للسيارات لتسهيل حركة المرور داخل النادي.",
       "time": "منذ 5 ساعات",
       "type": "emergency",
       "is_read": false,
@@ -664,7 +771,8 @@ class MockData {
     {
       "id": "not4",
       "title": "تجديد العضوية",
-      "message": "عزيزي العضو، نود تذكيرك بأن موعد تجديد اشتراكك السنوي يقترب. يمكنك التجديد أونلاين لتوفير الوقت.",
+      "message":
+          "عزيزي العضو، نود تذكيرك بأن موعد تجديد اشتراكك السنوي يقترب. يمكنك التجديد أونلاين لتوفير الوقت.",
       "time": "أمس",
       "type": "general",
       "is_read": true,
@@ -679,15 +787,16 @@ class MockData {
       "content": "يوجد عطل في إضاءة ملعب التنس رقم 2، يرجى إصلاحه في أقرب وقت.",
       "status": "مفتوحة",
       "date": "10/01/2026",
-      "club_id": "c1"
+      "club_id": "c1",
     },
     {
       "id": "2",
       "category": "خدمات اجتماعية",
-      "content": "تأخر في تقديم الوجبات في مطعم النادي الرئيسي يوم الجمعة الماضي.",
+      "content":
+          "تأخر في تقديم الوجبات في مطعم النادي الرئيسي يوم الجمعة الماضي.",
       "status": "مكتملة",
       "date": "08/01/2026",
-      "club_id": "c1"
+      "club_id": "c1",
     },
   ];
 
@@ -699,7 +808,7 @@ class MockData {
       "action": "إرسال إشعار جماعي",
       "target": "كافة الأعضاء",
       "time": "منذ 5 دقائق",
-      "club_id": "global"
+      "club_id": "global",
     },
     {
       "id": "log2",
@@ -707,7 +816,7 @@ class MockData {
       "action": "إغلاق ملعب تنس 1",
       "target": "ملعب تنس 1",
       "time": "منذ ساعة",
-      "club_id": "c1"
+      "club_id": "c1",
     },
   ];
 
@@ -719,7 +828,7 @@ class MockData {
       "role": "مدرب كاراتيه",
       "club_id": "c1",
       "phone": "0123456789",
-      "rating": 4.8
+      "rating": 4.8,
     },
     {
       "id": "s2",
@@ -727,7 +836,7 @@ class MockData {
       "role": "مشرفة أنشطة اجتماعية",
       "club_id": "c2",
       "phone": "0112233445",
-      "rating": 4.5
+      "rating": 4.5,
     },
   ];
 
@@ -740,7 +849,7 @@ class MockData {
       "membership_type": "عضو عامل",
       "club_id": "c1",
       "date": "2026-01-10",
-      "status": "pending_documents"
+      "status": "pending_documents",
     },
   ];
 
@@ -752,7 +861,7 @@ class MockData {
       "gate": "البوابة الرئيسية",
       "shift": "صباحية",
       "club_id": "c1",
-      "status": "on_duty"
+      "status": "on_duty",
     },
     {
       "id": "sec2",
@@ -760,7 +869,7 @@ class MockData {
       "gate": "بوابة الملاعب",
       "shift": "مسائية",
       "club_id": "c1",
-      "status": "off_duty"
+      "status": "off_duty",
     },
   ];
 
@@ -773,7 +882,35 @@ class MockData {
       "reason": "زيارة تفقدية",
       "date": "2026-01-15",
       "club_id": "c1",
-      "entry_code": "VIP-9988"
+      "entry_code": "VIP-9988",
+    },
+  ];
+
+  // Invitation Cards (New)
+  static final List<Map<String, dynamic>> invitationCards = [
+    {
+      "id": "card_001",
+      "type": "الرصيد السنوي",
+      "total": 30,
+      "used": 12,
+      "expiry": "2026-12-31",
+      "color": "0xFF003A8F",
+    },
+    {
+      "id": "card_002",
+      "type": "كارت إضافي (1)",
+      "total": 10,
+      "used": 8,
+      "expiry": "2026-03-15",
+      "color": "0xFF2E7D32",
+    },
+    {
+      "id": "card_003",
+      "type": "عروض الصيف",
+      "total": 5,
+      "used": 0,
+      "expiry": "2026-08-30",
+      "color": "0xFFC9A24D",
     },
   ];
 }

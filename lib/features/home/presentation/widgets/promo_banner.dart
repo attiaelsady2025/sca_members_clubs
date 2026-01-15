@@ -1,9 +1,7 @@
-
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sca_members_clubs/core/theme/app_colors.dart';
-import 'package:sca_members_clubs/core/services/firebase_service.dart';
 
 class PromoBanner extends StatefulWidget {
   final List<Map<String, dynamic>> promos;
@@ -72,7 +70,7 @@ class _PromoBannerState extends State<PromoBanner> {
               return InkWell(
                 onTap: () {
                   Navigator.pushNamed(
-                    context, 
+                    context,
                     '/article_detail',
                     arguments: promo,
                   );
@@ -83,10 +81,12 @@ class _PromoBannerState extends State<PromoBanner> {
                     borderRadius: BorderRadius.circular(24),
                     color: Color(int.parse(promo['color']!.toString())),
                     boxShadow: [
-                       BoxShadow(
-                        color: Color(int.parse(promo['color']!.toString())).withOpacity(0.3),
+                      BoxShadow(
+                        color: Color(
+                          int.parse(promo['color']!.toString()),
+                        ).withOpacity(0.3),
                         blurRadius: 12,
-                         offset: const Offset(0, 6),
+                        offset: const Offset(0, 6),
                       ),
                     ],
                   ),
@@ -109,7 +109,10 @@ class _PromoBannerState extends State<PromoBanner> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 4,
+                              ),
                               decoration: BoxDecoration(
                                 color: Colors.white.withOpacity(0.2),
                                 borderRadius: BorderRadius.circular(20),
@@ -161,7 +164,9 @@ class _PromoBannerState extends State<PromoBanner> {
               width: _currentPage == index ? 24 : 8,
               height: 8,
               decoration: BoxDecoration(
-                color: _currentPage == index ? AppColors.primary : Colors.grey[300],
+                color: _currentPage == index
+                    ? AppColors.primary
+                    : Colors.grey[300],
                 borderRadius: BorderRadius.circular(4),
               ),
             ),

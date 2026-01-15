@@ -1,17 +1,16 @@
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sca_members_clubs/core/theme/app_colors.dart';
 import 'package:sca_members_clubs/core/services/firebase_service.dart';
 import 'package:sca_members_clubs/core/widgets/sca_app_bar.dart';
 import 'package:sca_members_clubs/core/widgets/custom_text_field.dart';
-import 'package:sca_members_clubs/core/widgets/primary_button.dart';
 
 class AdminOfficialGuestsScreen extends StatefulWidget {
   const AdminOfficialGuestsScreen({super.key});
 
   @override
-  State<AdminOfficialGuestsScreen> createState() => _AdminOfficialGuestsScreenState();
+  State<AdminOfficialGuestsScreen> createState() =>
+      _AdminOfficialGuestsScreenState();
 }
 
 class _AdminOfficialGuestsScreenState extends State<AdminOfficialGuestsScreen> {
@@ -46,7 +45,10 @@ class _AdminOfficialGuestsScreenState extends State<AdminOfficialGuestsScreen> {
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Text("إصدار دعوة رسمية", style: GoogleFonts.cairo(fontWeight: FontWeight.bold)),
+        title: Text(
+          "إصدار دعوة رسمية",
+          style: GoogleFonts.cairo(fontWeight: FontWeight.bold),
+        ),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -86,23 +88,31 @@ class _AdminOfficialGuestsScreenState extends State<AdminOfficialGuestsScreen> {
                 "guest_name": nameController.text,
                 "organization": orgController.text,
                 "reason": reasonController.text,
-                "date": "${selectedDate.year}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}",
+                "date":
+                    "${selectedDate.year}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}",
                 "club_id": _clubId,
               });
               if (mounted) {
                 Navigator.pop(context);
                 _loadGuests();
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("تم إصدار الدعوة الرسمية بنجاح")),
+                  const SnackBar(
+                    content: Text("تم إصدار الدعوة الرسمية بنجاح"),
+                  ),
                 );
               }
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
               foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
-            child: Text("إصدار", style: GoogleFonts.cairo(fontWeight: FontWeight.bold)),
+            child: Text(
+              "إصدار",
+              style: GoogleFonts.cairo(fontWeight: FontWeight.bold),
+            ),
           ),
         ],
       ),
@@ -117,7 +127,9 @@ class _AdminOfficialGuestsScreenState extends State<AdminOfficialGuestsScreen> {
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: _guestsFuture,
         builder: (context, snapshot) {
-          if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
           final guests = snapshot.data!;
           if (guests.isEmpty) {
             return Center(
@@ -126,7 +138,10 @@ class _AdminOfficialGuestsScreenState extends State<AdminOfficialGuestsScreen> {
                 children: [
                   Icon(Icons.card_giftcard, size: 64, color: Colors.grey[300]),
                   const SizedBox(height: 16),
-                  Text("لا توجد دعوات رسمية حالياً", style: GoogleFonts.cairo(color: Colors.grey)),
+                  Text(
+                    "لا توجد دعوات رسمية حالياً",
+                    style: GoogleFonts.cairo(color: Colors.grey),
+                  ),
                 ],
               ),
             );
@@ -147,7 +162,10 @@ class _AdminOfficialGuestsScreenState extends State<AdminOfficialGuestsScreen> {
                     end: Alignment.bottomRight,
                   ),
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: Colors.amber.withOpacity(0.3), width: 2),
+                  border: Border.all(
+                    color: Colors.amber.withOpacity(0.3),
+                    width: 2,
+                  ),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -159,28 +177,56 @@ class _AdminOfficialGuestsScreenState extends State<AdminOfficialGuestsScreen> {
                         Expanded(
                           child: Text(
                             g['guest_name'],
-                            style: GoogleFonts.cairo(fontWeight: FontWeight.bold, fontSize: 15),
+                            style: GoogleFonts.cairo(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                            ),
                           ),
                         ),
                       ],
                     ),
                     const SizedBox(height: 8),
-                    Text("الجهة: ${g['organization']}", style: GoogleFonts.cairo(fontSize: 12, color: Colors.grey[700])),
-                    Text("السبب: ${g['reason']}", style: GoogleFonts.cairo(fontSize: 12, color: Colors.grey[700])),
+                    Text(
+                      "الجهة: ${g['organization']}",
+                      style: GoogleFonts.cairo(
+                        fontSize: 12,
+                        color: Colors.grey[700],
+                      ),
+                    ),
+                    Text(
+                      "السبب: ${g['reason']}",
+                      style: GoogleFonts.cairo(
+                        fontSize: 12,
+                        color: Colors.grey[700],
+                      ),
+                    ),
                     const Divider(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("كود الدخول الذهبي:", style: GoogleFonts.cairo(fontSize: 11, color: Colors.grey)),
+                        Text(
+                          "كود الدخول الذهبي:",
+                          style: GoogleFonts.cairo(
+                            fontSize: 11,
+                            color: Colors.grey,
+                          ),
+                        ),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 4,
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.amber,
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
                             g['entry_code'],
-                            style: GoogleFonts.cairo(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 13),
+                            style: GoogleFonts.cairo(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              fontSize: 13,
+                            ),
                           ),
                         ),
                       ],
@@ -196,7 +242,13 @@ class _AdminOfficialGuestsScreenState extends State<AdminOfficialGuestsScreen> {
         onPressed: _showCreateGuestDialog,
         backgroundColor: AppColors.primary,
         icon: const Icon(Icons.add, color: Colors.white),
-        label: Text("دعوة رسمية جديدة", style: GoogleFonts.cairo(color: Colors.white, fontWeight: FontWeight.bold)),
+        label: Text(
+          "دعوة رسمية جديدة",
+          style: GoogleFonts.cairo(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
     );
   }

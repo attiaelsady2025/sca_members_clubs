@@ -1,11 +1,9 @@
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sca_members_clubs/core/theme/app_colors.dart';
 import 'package:sca_members_clubs/core/services/firebase_service.dart';
 import 'package:sca_members_clubs/core/widgets/sca_app_bar.dart';
 import 'package:sca_members_clubs/core/widgets/custom_text_field.dart';
-import 'package:sca_members_clubs/core/widgets/primary_button.dart';
 
 class AdminUsersScreen extends StatefulWidget {
   const AdminUsersScreen({super.key});
@@ -41,8 +39,13 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setDialogState) => AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: Text("إنشاء مستخدم جديد", style: GoogleFonts.cairo(fontWeight: FontWeight.bold)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: Text(
+            "إنشاء مستخدم جديد",
+            style: GoogleFonts.cairo(fontWeight: FontWeight.bold),
+          ),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -71,7 +74,13 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                 ),
                 const SizedBox(height: 16),
                 if (_adminProfile?['club_id'] == "global") ...[
-                  Text("نوع الحساب", style: GoogleFonts.cairo(fontWeight: FontWeight.bold, fontSize: 14)),
+                  Text(
+                    "نوع الحساب",
+                    style: GoogleFonts.cairo(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
                   const SizedBox(height: 8),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -84,11 +93,18 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                       child: DropdownButton<String>(
                         value: selectedRole,
                         isExpanded: true,
-                        onChanged: (val) => setDialogState(() => selectedRole = val!),
+                        onChanged: (val) =>
+                            setDialogState(() => selectedRole = val!),
                         items: const [
                           DropdownMenuItem(value: "member", child: Text("عضو")),
-                          DropdownMenuItem(value: "club_admin", child: Text("مدير نادي")),
-                          DropdownMenuItem(value: "admin", child: Text("مدير نظام")),
+                          DropdownMenuItem(
+                            value: "club_admin",
+                            child: Text("مدير نادي"),
+                          ),
+                          DropdownMenuItem(
+                            value: "admin",
+                            child: Text("مدير نظام"),
+                          ),
                         ],
                       ),
                     ),
@@ -96,7 +112,13 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                   const SizedBox(height: 12),
                 ],
                 if (selectedRole != "admin") ...[
-                  Text("النادي التابع له", style: GoogleFonts.cairo(fontWeight: FontWeight.bold, fontSize: 14)),
+                  Text(
+                    "النادي التابع له",
+                    style: GoogleFonts.cairo(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
                   const SizedBox(height: 8),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -107,15 +129,28 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                     ),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
-                        value: selectedClub ?? ((_adminProfile?['club_id'] as String?) != "global" ? (_adminProfile?['club_id'] as String?) : null),
-                        hint: Text("اختر النادي", style: GoogleFonts.cairo(fontSize: 14)),
+                        value:
+                            selectedClub ??
+                            ((_adminProfile?['club_id'] as String?) != "global"
+                                ? (_adminProfile?['club_id'] as String?)
+                                : null),
+                        hint: Text(
+                          "اختر النادي",
+                          style: GoogleFonts.cairo(fontSize: 14),
+                        ),
                         isExpanded: true,
-                        onChanged: _adminProfile?['club_id'] == "global" 
+                        onChanged: _adminProfile?['club_id'] == "global"
                             ? (val) => setDialogState(() => selectedClub = val)
                             : null,
                         items: const [
-                          DropdownMenuItem(value: "c1", child: Text("نادي التجديف")),
-                          DropdownMenuItem(value: "c2", child: Text("نادي الفيروز")),
+                          DropdownMenuItem(
+                            value: "c1",
+                            child: Text("نادي التجديف"),
+                          ),
+                          DropdownMenuItem(
+                            value: "c2",
+                            child: Text("نادي الفيروز"),
+                          ),
                         ],
                       ),
                     ),
@@ -127,19 +162,25 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text("إلغاء", style: GoogleFonts.cairo(color: Colors.grey)),
+              child: Text(
+                "إلغاء",
+                style: GoogleFonts.cairo(color: Colors.grey),
+              ),
             ),
             ElevatedButton(
               onPressed: () async {
-                if (nameController.text.isEmpty || emailController.text.isEmpty) {
+                if (nameController.text.isEmpty ||
+                    emailController.text.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("يرجى ملء جميع الحقول الإلزامية")),
+                    const SnackBar(
+                      content: Text("يرجى ملء جميع الحقول الإلزامية"),
+                    ),
                   );
                   return;
                 }
 
-                final clubId = selectedRole == "admin" 
-                    ? "global" 
+                final clubId = selectedRole == "admin"
+                    ? "global"
                     : (selectedClub ?? _adminProfile?['club_id']);
 
                 await FirebaseService().createUser({
@@ -163,9 +204,14 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
-              child: Text("إنشاء", style: GoogleFonts.cairo(fontWeight: FontWeight.bold)),
+              child: Text(
+                "إنشاء",
+                style: GoogleFonts.cairo(fontWeight: FontWeight.bold),
+              ),
             ),
           ],
         ),
@@ -181,7 +227,9 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: _usersFuture,
         builder: (context, snapshot) {
-          if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
           final users = snapshot.data!;
 
           return ListView.separated(
@@ -195,36 +243,71 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(16),
-                  boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10)],
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.02),
+                      blurRadius: 10,
+                    ),
+                  ],
                 ),
                 child: Row(
                   children: [
                     CircleAvatar(
                       radius: 25,
-                      backgroundColor: _getRoleColor(user['role']).withOpacity(0.1),
-                      child: Icon(_getRoleIcon(user['role']), color: _getRoleColor(user['role'])),
+                      backgroundColor: _getRoleColor(
+                        user['role'],
+                      ).withOpacity(0.1),
+                      child: Icon(
+                        _getRoleIcon(user['role']),
+                        color: _getRoleColor(user['role']),
+                      ),
                     ),
                     const SizedBox(width: 16),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(user['name'] ?? "مستخدم", style: GoogleFonts.cairo(fontWeight: FontWeight.bold, fontSize: 14)),
-                          Text(_getRoleLabel(user['role']), style: GoogleFonts.cairo(fontSize: 12, color: Colors.grey[600])),
+                          Text(
+                            user['name'] ?? "مستخدم",
+                            style: GoogleFonts.cairo(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                          ),
+                          Text(
+                            _getRoleLabel(user['role']),
+                            style: GoogleFonts.cairo(
+                              fontSize: 12,
+                              color: Colors.grey[600],
+                            ),
+                          ),
                           if (user['email'] != null)
-                            Text(user['email'], style: GoogleFonts.cairo(fontSize: 11, color: Colors.grey[500])),
+                            Text(
+                              user['email'],
+                              style: GoogleFonts.cairo(
+                                fontSize: 11,
+                                color: Colors.grey[500],
+                              ),
+                            ),
                         ],
                       ),
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: _getRoleColor(user['role']).withOpacity(0.1),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
                         user['membership_id'] ?? "N/A",
-                        style: GoogleFonts.cairo(fontSize: 10, fontWeight: FontWeight.bold, color: _getRoleColor(user['role'])),
+                        style: GoogleFonts.cairo(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          color: _getRoleColor(user['role']),
+                        ),
                       ),
                     ),
                   ],
@@ -238,32 +321,47 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
         onPressed: _showCreateUserDialog,
         backgroundColor: AppColors.primary,
         icon: const Icon(Icons.person_add, color: Colors.white),
-        label: Text("مستخدم جديد", style: GoogleFonts.cairo(color: Colors.white, fontWeight: FontWeight.bold)),
+        label: Text(
+          "مستخدم جديد",
+          style: GoogleFonts.cairo(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
     );
   }
 
   Color _getRoleColor(String? role) {
     switch (role) {
-      case 'admin': return Colors.red;
-      case 'club_admin': return Colors.orange;
-      default: return AppColors.primary;
+      case 'admin':
+        return Colors.red;
+      case 'club_admin':
+        return Colors.orange;
+      default:
+        return AppColors.primary;
     }
   }
 
   IconData _getRoleIcon(String? role) {
     switch (role) {
-      case 'admin': return Icons.admin_panel_settings;
-      case 'club_admin': return Icons.manage_accounts;
-      default: return Icons.person;
+      case 'admin':
+        return Icons.admin_panel_settings;
+      case 'club_admin':
+        return Icons.manage_accounts;
+      default:
+        return Icons.person;
     }
   }
 
   String _getRoleLabel(String? role) {
     switch (role) {
-      case 'admin': return "مدير النظام";
-      case 'club_admin': return "مدير نادي";
-      default: return "عضو";
+      case 'admin':
+        return "مدير النظام";
+      case 'club_admin':
+        return "مدير نادي";
+      default:
+        return "عضو";
     }
   }
 }

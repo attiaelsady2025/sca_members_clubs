@@ -1,5 +1,5 @@
-
 import 'package:equatable/equatable.dart';
+import 'package:sca_members_clubs/features/auth/domain/entities/user_entity.dart';
 
 abstract class AuthState extends Equatable {
   const AuthState();
@@ -13,11 +13,11 @@ class AuthInitial extends AuthState {}
 class AuthLoading extends AuthState {}
 
 class AuthAuthenticated extends AuthState {
-  final Map<String, dynamic> userProfile;
-  const AuthAuthenticated(this.userProfile);
+  final UserEntity user;
+  const AuthAuthenticated(this.user);
 
   @override
-  List<Object?> get props => [userProfile];
+  List<Object?> get props => [user];
 }
 
 class AuthError extends AuthState {

@@ -1,5 +1,6 @@
-
 import 'package:equatable/equatable.dart';
+import 'package:sca_members_clubs/features/news/domain/entities/event.dart';
+import 'package:sca_members_clubs/features/news/domain/entities/news_article.dart';
 
 abstract class NewsState extends Equatable {
   const NewsState();
@@ -13,8 +14,8 @@ class NewsInitial extends NewsState {}
 class NewsLoading extends NewsState {}
 
 class NewsLoaded extends NewsState {
-  final List<Map<String, dynamic>> news;
-  final List<Map<String, dynamic>> events;
+  final List<NewsArticle> news;
+  final List<Event> events;
 
   const NewsLoaded(this.news, this.events);
 

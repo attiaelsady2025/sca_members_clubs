@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sca_members_clubs/core/theme/app_colors.dart';
@@ -6,6 +5,8 @@ import 'package:sca_members_clubs/core/widgets/primary_button.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sca_members_clubs/features/dining/presentation/cubit/dining_cubit.dart';
 import 'package:sca_members_clubs/features/dining/presentation/cubit/dining_state.dart';
+import 'package:sca_members_clubs/features/dining/domain/entities/restaurant.dart';
+import 'package:sca_members_clubs/features/dining/domain/entities/menu_item.dart';
 import 'package:sca_members_clubs/core/di/injection_container.dart';
 
 class MenuScreen extends StatelessWidget {
@@ -13,17 +14,17 @@ class MenuScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final restaurant = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    final restaurant = ModalRoute.of(context)!.settings.arguments as Restaurant;
 
     return BlocProvider(
-      create: (context) => sl<DiningCubit>()..loadMenu(restaurant['id']),
+      create: (context) => sl<DiningCubit>()..loadMenu(restaurant.id),
       child: MenuView(restaurant: restaurant),
     );
   }
 }
 
 class MenuView extends StatelessWidget {
-  final Map<String, dynamic> restaurant;
+  final Restaurant restaurant;
   const MenuView({super.key, required this.restaurant});
 
   @override
@@ -41,7 +42,7 @@ class MenuView extends StatelessWidget {
               iconTheme: const IconThemeData(color: Colors.white),
               flexibleSpace: FlexibleSpaceBar(
                 title: Text(
-                  restaurant['name'],
+                  restaurant.name,
                   style: GoogleFonts.cairo(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -56,7 +57,10 @@ class MenuView extends StatelessWidget {
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
-                          colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
+                          colors: [
+                            Colors.transparent,
+                            Colors.black.withOpacity(0.7),
+                          ],
                         ),
                       ),
                     ),
@@ -72,12 +76,19 @@ class MenuView extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             }
             if (state is DiningError) {
-              return Center(child: Text("خطأ في التحميل", style: GoogleFonts.cairo()));
+              return Center(
+                child: Text("خطأ في التحميل", style: GoogleFonts.cairo()),
+              );
             }
             if (state is MenuLoaded) {
               final menuItems = state.menu;
               if (menuItems.isEmpty) {
-                return Center(child: Text("لا توجد أصناف في القائمة", style: GoogleFonts.cairo()));
+                return Center(
+                  child: Text(
+                    "لا توجد أصناف في القائمة",
+                    style: GoogleFonts.cairo(),
+                  ),
+                );
               }
 
               return ListView.separated(
@@ -103,10 +114,11 @@ class MenuView extends StatelessWidget {
               color: Colors.black.withOpacity(0.05),
               blurRadius: 10,
               offset: const Offset(0, -5),
-            )
+            ),
           ],
         ),
-        child: SafeArea( // Safe Area for iPhone X+
+        child: SafeArea(
+          // Safe Area for iPhone X+
           child: Row(
             children: [
               Expanded(
@@ -114,8 +126,21 @@ class MenuView extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("الإجمالي", style: GoogleFonts.cairo(color: Colors.grey, fontSize: 12)),
-                    Text("0.00 ج.م", style: GoogleFonts.cairo(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.primary)),
+                    Text(
+                      "الإجمالي",
+                      style: GoogleFonts.cairo(
+                        color: Colors.grey,
+                        fontSize: 12,
+                      ),
+                    ),
+                    Text(
+                      "0.00 ج.م",
+                      style: GoogleFonts.cairo(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primary,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -124,9 +149,14 @@ class MenuView extends StatelessWidget {
                 child: PrimaryButton(
                   text: "إتمام الطلب (0)",
                   onPressed: () {
-                     ScaffoldMessenger.of(context).showSnackBar(
-                       SnackBar(content: Text("سيتم تفعيل الطلب قريباً", style: GoogleFonts.cairo())),
-                     );
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          "سيتم تفعيل الطلب قريباً",
+                          style: GoogleFonts.cairo(),
+                        ),
+                      ),
+                    );
                   },
                 ),
               ),
@@ -137,7 +167,7 @@ class MenuView extends StatelessWidget {
     );
   }
 
-  Widget _buildMenuItem(Map<String, dynamic> item) {
+  Widget _buildMenuItem(MenuItem item) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
@@ -157,19 +187,26 @@ class MenuView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  item['name'],
-                  style: GoogleFonts.cairo(fontSize: 16, fontWeight: FontWeight.bold),
+                  item.name,
+                  style: GoogleFonts.cairo(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 Text(
-                  item['description'],
+                  item.description,
                   style: GoogleFonts.cairo(fontSize: 12, color: Colors.grey),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  "${item['price']} ج.م",
-                  style: GoogleFonts.cairo(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.primary),
+                  "${item.price} ج.م",
+                  style: GoogleFonts.cairo(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary,
+                  ),
                 ),
               ],
             ),
@@ -179,7 +216,11 @@ class MenuView extends StatelessWidget {
             onPressed: () {
               // Add to cart logic
             },
-            icon: const Icon(Icons.add_circle, color: AppColors.primary, size: 30),
+            icon: const Icon(
+              Icons.add_circle,
+              color: AppColors.primary,
+              size: 30,
+            ),
           ),
         ],
       ),

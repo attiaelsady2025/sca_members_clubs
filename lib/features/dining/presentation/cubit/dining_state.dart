@@ -1,5 +1,6 @@
-
 import 'package:equatable/equatable.dart';
+import 'package:sca_members_clubs/features/dining/domain/entities/menu_item.dart';
+import 'package:sca_members_clubs/features/dining/domain/entities/restaurant.dart';
 
 abstract class DiningState extends Equatable {
   const DiningState();
@@ -13,7 +14,7 @@ class DiningInitial extends DiningState {}
 class DiningLoading extends DiningState {}
 
 class DiningLoaded extends DiningState {
-  final List<Map<String, dynamic>> restaurants;
+  final List<Restaurant> restaurants;
   const DiningLoaded(this.restaurants);
 
   @override
@@ -31,7 +32,7 @@ class DiningError extends DiningState {
 class MenuLoading extends DiningState {}
 
 class MenuLoaded extends DiningState {
-  final List<Map<String, dynamic>> menu;
+  final List<MenuItem> menu;
   const MenuLoaded(this.menu);
 
   @override

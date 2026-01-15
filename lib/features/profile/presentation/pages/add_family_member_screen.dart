@@ -2,16 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sca_members_clubs/core/theme/app_colors.dart';
 import 'package:sca_members_clubs/core/widgets/primary_button.dart';
-import 'package:sca_members_clubs/core/services/firebase_service.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sca_members_clubs/features/profile/presentation/cubit/profile_cubit.dart';
+import 'package:sca_members_clubs/core/di/injection_container.dart';
 
-class AddFamilyMemberScreen extends StatefulWidget {
+class AddFamilyMemberScreen extends StatelessWidget {
   const AddFamilyMemberScreen({super.key});
 
   @override
-  State<AddFamilyMemberScreen> createState() => _AddFamilyMemberScreenState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => sl<ProfileCubit>(),
+      child: const AddFamilyMemberForm(),
+    );
+  }
 }
 
-class _AddFamilyMemberScreenState extends State<AddFamilyMemberScreen> {
+class AddFamilyMemberForm extends StatefulWidget {
+  const AddFamilyMemberForm({super.key});
+
+  @override
+  State<AddFamilyMemberForm> createState() => _AddFamilyMemberFormState();
+}
+
+class _AddFamilyMemberFormState extends State<AddFamilyMemberForm> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
@@ -47,27 +61,28 @@ class _AddFamilyMemberScreenState extends State<AddFamilyMemberScreen> {
 
   void _extractDataFromNationalId(String id) {
     try {
-      // Egyptian National ID logic
       int centuryDigit = int.parse(id.substring(0, 1));
       int year = int.parse(id.substring(1, 3));
       int month = int.parse(id.substring(3, 5));
       int day = int.parse(id.substring(5, 7));
 
       int fullYear = (centuryDigit == 2 ? 1900 : 2000) + year;
-      
+
       final birthDate = DateTime(fullYear, month, day);
       final today = DateTime.now();
       int age = today.year - birthDate.year;
-      if (today.month < birthDate.month || (today.month == birthDate.month && today.day < birthDate.day)) {
+      if (today.month < birthDate.month ||
+          (today.month == birthDate.month && today.day < birthDate.day)) {
         age--;
       }
 
       setState(() {
         _ageController.text = age.toString();
-        _birthDateController.text = "${day.toString().padLeft(2, '0')}/${month.toString().padLeft(2, '0')}/$fullYear";
+        _birthDateController.text =
+            "${day.toString().padLeft(2, '0')}/${month.toString().padLeft(2, '0')}/$fullYear";
       });
     } catch (e) {
-      // Invalid logic or digit
+      // Invalid logic
     }
   }
 
@@ -76,7 +91,7 @@ class _AddFamilyMemberScreenState extends State<AddFamilyMemberScreen> {
       setState(() => _isLoading = true);
 
       final newMember = {
-        "id": "f${DateTime.now().millisecondsSinceEpoch}", // temporary ID
+        "id": "f${DateTime.now().millisecondsSinceEpoch}",
         "name": _nameController.text,
         "relation": _selectedRelation,
         "age": int.tryParse(_ageController.text) ?? 0,
@@ -85,11 +100,18 @@ class _AddFamilyMemberScreenState extends State<AddFamilyMemberScreen> {
         "image": "assets/images/user_placeholder.png",
       };
 
-      await FirebaseService().addFamilyMember(newMember);
+      await context.read<ProfileCubit>().addFamilyMember(newMember);
 
       if (mounted) {
+        setState(() => _isLoading = false);
         ScaffoldMessenger.of(context).showSnackBar(
-           SnackBar(content: Text("تمت الإضافة بنجاح", style: GoogleFonts.cairo())),
+          SnackBar(
+            content: Text(
+              "تمت إضافة فرد الأسرة بنجاح",
+              style: GoogleFonts.cairo(),
+            ),
+            backgroundColor: Colors.green,
+          ),
         );
         Navigator.pop(context);
       }
@@ -101,10 +123,13 @@ class _AddFamilyMemberScreenState extends State<AddFamilyMemberScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text("إضافة فرد جديد"),
+        title: Text(
+          "إضافة فرد جديد",
+          style: GoogleFonts.cairo(fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
-        foregroundColor: Colors.black,
+        foregroundColor: AppColors.textPrimary,
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -114,37 +139,66 @@ class _AddFamilyMemberScreenState extends State<AddFamilyMemberScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("بيانات الفرد", style: GoogleFonts.cairo(fontSize: 18, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 24),
-              
+              Text(
+                "بيانات فرد الأسرة",
+                style: GoogleFonts.cairo(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                "يرجى إدخال البيانات الشخصية بدقة كما هي في الرقم القومي.",
+                style: GoogleFonts.cairo(fontSize: 14, color: Colors.grey[600]),
+              ),
+              const SizedBox(height: 32),
+
               // Name
               TextFormField(
                 controller: _nameController,
                 decoration: InputDecoration(
                   labelText: "الاسم رباعي",
                   labelStyle: GoogleFonts.cairo(),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                  prefixIcon: const Icon(Icons.person),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  prefixIcon: const Icon(Icons.person_outline_rounded),
+                  filled: true,
+                  fillColor: Colors.white,
                 ),
-                validator: (value) => value!.isEmpty ? "من فضلك أدخل الاسم" : null,
+                validator: (value) =>
+                    value!.isEmpty ? "من فضلك أدخل الاسم" : null,
               ),
-              const SizedBox(height: 16),
-              
+              const SizedBox(height: 20),
+
               // Relation Dropdown
               DropdownButtonFormField<String>(
-                value: _selectedRelation,
-                items: _relations.map((r) => DropdownMenuItem(value: r, child: Text(r, style: GoogleFonts.cairo()))).toList(),
-                onChanged: (value) => setState(() => _selectedRelation = value!),
+                initialValue: _selectedRelation,
+                items: _relations
+                    .map(
+                      (r) => DropdownMenuItem(
+                        value: r,
+                        child: Text(r, style: GoogleFonts.cairo()),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (value) =>
+                    setState(() => _selectedRelation = value!),
                 decoration: InputDecoration(
                   labelText: "صلة القرابة",
                   labelStyle: GoogleFonts.cairo(),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                  prefixIcon: const Icon(Icons.family_restroom),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  prefixIcon: const Icon(Icons.family_restroom_outlined),
+                  filled: true,
+                  fillColor: Colors.white,
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 20),
 
-              // National ID (New)
+              // National ID
               TextFormField(
                 controller: _nationalIdController,
                 keyboardType: TextInputType.number,
@@ -152,9 +206,13 @@ class _AddFamilyMemberScreenState extends State<AddFamilyMemberScreen> {
                 decoration: InputDecoration(
                   labelText: "الرقم القومي (14 رقم)",
                   labelStyle: GoogleFonts.cairo(),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                  prefixIcon: const Icon(Icons.badge),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  prefixIcon: const Icon(Icons.badge_outlined),
                   counterText: "",
+                  filled: true,
+                  fillColor: Colors.white,
                 ),
                 validator: (value) {
                   if (value!.isEmpty) return "من فضلك أدخل الرقم القومي";
@@ -162,22 +220,24 @@ class _AddFamilyMemberScreenState extends State<AddFamilyMemberScreen> {
                   return null;
                 },
               ),
-              const SizedBox(height: 16),
-              
-              // Birth Date (Read-only, auto-filled)
+              const SizedBox(height: 20),
+
+              // Birth Date (Read-only)
               TextFormField(
                 controller: _birthDateController,
                 readOnly: true,
                 decoration: InputDecoration(
                   labelText: "تاريخ الميلاد (يستخرج تلقائياً)",
                   labelStyle: GoogleFonts.cairo(),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                  prefixIcon: const Icon(Icons.event),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  prefixIcon: const Icon(Icons.cake_outlined),
                   filled: true,
-                  fillColor: Colors.grey[100],
+                  fillColor: Colors.grey[50],
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 20),
 
               // Age (Auto-filled)
               TextFormField(
@@ -186,18 +246,26 @@ class _AddFamilyMemberScreenState extends State<AddFamilyMemberScreen> {
                 decoration: InputDecoration(
                   labelText: "العمر",
                   labelStyle: GoogleFonts.cairo(),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                  prefixIcon: const Icon(Icons.calendar_today),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  prefixIcon: const Icon(Icons.calendar_today_outlined),
+                  filled: true,
+                  fillColor: Colors.grey[50],
                 ),
-                validator: (value) => value!.isEmpty ? "من فضلك أدخل العمر" : null,
+                validator: (value) =>
+                    value!.isEmpty ? "من فضلك أدخل العمر" : null,
               ),
 
-              const SizedBox(height: 40),
+              const SizedBox(height: 48),
 
-              _isLoading 
-                ? const Center(child: CircularProgressIndicator())
-                : PrimaryButton(text: "حفظ البيانات", onPressed: _submit),
-
+              _isLoading
+                  ? const Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.primary,
+                      ),
+                    )
+                  : PrimaryButton(text: "حفظ البيانات", onPressed: _submit),
             ],
           ),
         ),

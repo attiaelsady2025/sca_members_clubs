@@ -1,340 +1,315 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sca_members_clubs/core/theme/app_colors.dart';
-import 'package:sca_members_clubs/core/services/firebase_service.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sca_members_clubs/features/profile/presentation/cubit/profile_cubit.dart';
+import 'package:sca_members_clubs/features/profile/presentation/cubit/profile_state.dart';
 import 'package:sca_members_clubs/features/membership/presentation/widgets/dynamic_qr_widget.dart';
+import 'package:sca_members_clubs/core/di/injection_container.dart';
 
-class MembershipCardScreen extends StatefulWidget {
+class MembershipCardScreen extends StatelessWidget {
   const MembershipCardScreen({super.key});
 
   @override
-  State<MembershipCardScreen> createState() => _MembershipCardScreenState();
-}
-
-class _MembershipCardScreenState extends State<MembershipCardScreen> {
-  late Future<Map<String, dynamic>> _userFuture;
-  late Future<List<Map<String, dynamic>>> _clubsFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    _userFuture = FirebaseService().getUserProfile();
-    _clubsFuture = FirebaseService().getClubs();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    // Receiving club name from navigation arguments
-    final clubName = ModalRoute.of(context)?.settings.arguments as String? ?? "نادي هيئة قناة السويس";
+    final clubName =
+        ModalRoute.of(context)?.settings.arguments as String? ??
+        "النادي العام لهيئة قناة السويس";
 
-    return Scaffold(
-      backgroundColor: const Color(0xFFF5F7FA),
-      appBar: AppBar(
-        title: const Text("كارنيه العضوية"),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        foregroundColor: Colors.black,
-        centerTitle: true,
-      ),
-      body: FutureBuilder(
-        future: Future.wait([_userFuture, _clubsFuture]),
-        builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          
-          final userData = snapshot.data![0] as Map<String, dynamic>;
-          final allClubs = snapshot.data![1] as List<Map<String, dynamic>>;
-          
-          // Find current club to get its branding color
-          final currentClub = allClubs.firstWhere(
-            (c) => c['name'] == clubName,
-            orElse: () => {"color": AppColors.primary},
-          );
-          final Color clubColor = currentClub['color'] as Color;
-
-          return SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 24),
-            child: Column(
-              children: [
-                // The ID Card
-                _buildCarnet(context, userData, clubName, clubColor),
-                
-                const SizedBox(height: 32),
-                
-                // Report Lost Button (New Feature)
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton.icon(
-                    onPressed: () => _showReportLostDialog(context),
-                    icon: const Icon(Icons.report_problem_outlined, size: 18),
-                    label: Text("إبلاغ عن فقدان الكارنيه", style: GoogleFonts.cairo(fontWeight: FontWeight.bold)),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.error,
-                      side: const BorderSide(color: AppColors.error),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 32),
-                
-                // Instructions / Info
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.03),
-                        blurRadius: 15,
-                        offset: const Offset(0, 8),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    children: [
-                      _buildInfoRow(Icons.qr_code_scanner, "استخدم هذا الكود للدخول من بوابات النادي"),
-                      const Divider(height: 32),
-                      _buildInfoRow(Icons.security, "هذا الكارنيه خاص بالعضو ولا يجوز لغيره استخدامه"),
-                      const Divider(height: 32),
-                      _buildInfoRow(Icons.info_outline, "يتم تحديث بيانات العضوية تلقائياً عند التجديد"),
-                    ],
-                  ),
-                ),
-              ],
+    return BlocProvider(
+      create: (context) => sl<ProfileCubit>()..loadProfile(),
+      child: Scaffold(
+        backgroundColor: const Color(0xFF0F172A), // Darker Navy
+        appBar: AppBar(
+          title: Text(
+            "بطاقة العضوية الذكية",
+            style: GoogleFonts.cairo(
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
             ),
-          );
-        },
-      ),
-    );
-  }
-
-  void _showReportLostDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Text(
-          "إبلاغ عن فقدان",
-          textAlign: TextAlign.center,
-          style: GoogleFonts.cairo(fontWeight: FontWeight.bold, color: AppColors.error),
-        ),
-        content: Text(
-          "هل أنت متأكد من الإبلاغ عن فقدان الكارنيه؟ سيتم إيقاف فاعلية الكود الرقمي فوراً لحماية حسابك.",
-          textAlign: TextAlign.center,
-          style: GoogleFonts.cairo(),
-        ),
-        actions: [
-          TextButton(
+          ),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
             onPressed: () => Navigator.pop(context),
-            child: Text("إلغاء", style: GoogleFonts.cairo(color: Colors.grey)),
           ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              _handleReportSuccess();
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.error,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            ),
-            child: Text("تأكيد الإبلاغ", style: GoogleFonts.cairo(color: Colors.white)),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _handleReportSuccess() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          "تم تسجيل بلاغك بنجاح. يرجى التوجه لمقر النادي لاستخراج كارنيه جديد.",
-          style: GoogleFonts.cairo(),
+          centerTitle: true,
         ),
-        backgroundColor: AppColors.error,
-        duration: const Duration(seconds: 4),
+        body: BlocBuilder<ProfileCubit, ProfileState>(
+          builder: (context, state) {
+            if (state is ProfileLoading) {
+              return const Center(
+                child: CircularProgressIndicator(color: AppColors.primary),
+              );
+            }
+            if (state is ProfileError) {
+              return Center(
+                child: Text(
+                  state.message,
+                  style: GoogleFonts.cairo(color: Colors.white),
+                ),
+              );
+            }
+            if (state is ProfileLoaded) {
+              final user = state.userProfile;
+              return SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 20,
+                  horizontal: 24,
+                ),
+                child: Column(
+                  children: [
+                    // Premium Membership Card
+                    _buildPremiumCarnet(user, clubName),
+
+                    const SizedBox(height: 40),
+
+                    // Information Section with Modern Glass Look
+                    Container(
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.05),
+                        borderRadius: BorderRadius.circular(30),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.1),
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          _buildInfoRow(
+                            Icons.qr_code_2_rounded,
+                            "استخدم الكود الخاص بك للدخول السريع عبر البوابات الإلكترونية.",
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 20),
+                            child: Divider(color: Colors.white12, height: 1),
+                          ),
+                          _buildInfoRow(
+                            Icons.verified_user_rounded,
+                            "هذه البطاقة رقمية مخصصة للعاملين وأسرهم بهيئة قناة السويس.",
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 20),
+                            child: Divider(color: Colors.white12, height: 1),
+                          ),
+                          _buildInfoRow(
+                            Icons.sync_rounded,
+                            "يتم تحديث صلاحية البطاقة تلقائياً عند تجديد اشتراك العضوية.",
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+                  ],
+                ),
+              );
+            }
+            return const SizedBox.shrink();
+          },
+        ),
       ),
     );
   }
 
-  Widget _buildCarnet(BuildContext context, Map<String, dynamic> user, String clubName, Color color) {
+  Widget _buildPremiumCarnet(dynamic user, String clubName) {
     return AspectRatio(
-      aspectRatio: 0.7,
+      aspectRatio: 0.63, // Standard ID Card Ratio but Vertical
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(28),
-          gradient: LinearGradient(
-            colors: [color.withBlue(100), color],
+          borderRadius: BorderRadius.circular(32),
+          gradient: const LinearGradient(
+            colors: [Color(0xFF1E293B), Color(0xFF0F172A)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
           boxShadow: [
             BoxShadow(
-              color: color.withOpacity(0.4),
-              blurRadius: 30,
-              offset: const Offset(0, 15),
+              color: AppColors.primary.withOpacity(0.3),
+              blurRadius: 40,
+              offset: const Offset(0, 20),
             ),
           ],
+          border: Border.all(color: Colors.white.withOpacity(0.1)),
         ),
         clipBehavior: Clip.antiAlias,
         child: Stack(
           children: [
-            // Watermark Mesh Pattern
-            Opacity(
-              opacity: 0.12,
-              child: GridView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
-                itemBuilder: (context, index) => const Icon(Icons.anchor, color: Colors.white, size: 50),
-              ),
-            ),
-            
-            // Glossy Overlay
+            // Abstract Background Patterns
             Positioned(
-              top: -150,
-              right: -150,
+              top: -50,
+              right: -50,
               child: Container(
-                width: 400,
-                height: 400,
+                width: 250,
+                height: 250,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
-                    colors: [Colors.white.withOpacity(0.2), Colors.transparent],
+                    colors: [
+                      AppColors.primary.withOpacity(0.2),
+                      Colors.transparent,
+                    ],
                   ),
                 ),
               ),
             ),
-            
+
+            // SCA Watermark (Centered & Ghosted)
+            Center(
+              child: Opacity(
+                opacity: 0.04,
+                child: Image.asset(
+                  'assets/images/logo.png',
+                  width: 380,
+                  color: Colors.white,
+                  colorBlendMode: BlendMode.srcIn,
+                  errorBuilder: (context, error, stackTrace) =>
+                      const Icon(Icons.anchor, size: 300, color: Colors.white),
+                ),
+              ),
+            ),
+
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
               child: Column(
                 children: [
-                  // Header
+                  // Logo & Header
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      const Icon(Icons.anchor, color: Colors.white, size: 32),
                       Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Row(
-                            children: [
-                              const Icon(Icons.anchor, color: Colors.white, size: 28),
-                              const SizedBox(width: 8),
-                              Text(
-                                "هيئة قناة السويس",
-                                style: GoogleFonts.cairo(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w900,
-                                  fontSize: 16,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ],
+                          Text(
+                            "هيئة قناة السويس",
+                            style: GoogleFonts.cairo(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w900,
+                              fontSize: 16,
+                            ),
                           ),
                           Text(
-                            clubName.replaceAll(RegExp(r'\(.*\)'), '').trim(),
-                            style: GoogleFonts.cairo(
-                              color: Colors.white.withOpacity(0.9),
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
+                            "Suez Canal Authority",
+                            style: GoogleFonts.inter(
+                              color: Colors.white54,
+                              fontSize: 10,
+                              letterSpacing: 1,
                             ),
                           ),
                         ],
                       ),
-                      // Smart Chip
-                      Container(
-                        width: 48,
-                        height: 38,
-                        decoration: BoxDecoration(
-                          color: Colors.amber,
-                          borderRadius: BorderRadius.circular(8),
-                          gradient: LinearGradient(
-                            colors: [Colors.amber[300]!, Colors.amber[700]!],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                        ),
-                        child: Icon(Icons.memory, color: Colors.amber[100], size: 22),
-                      ),
                     ],
                   ),
-                  
-                  const Spacer(flex: 2),
-                  
-                  // Profile Photo
+
+                  const SizedBox(height: 16),
+
+                  // Photo Frame
                   Container(
-                    width: 130,
+                    width: 120,
                     height: 150,
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.white.withOpacity(0.5), width: 3),
+                      border: Border.all(color: AppColors.primary, width: 2),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
+                          color: Colors.black.withOpacity(0.5),
                           blurRadius: 15,
-                          offset: const Offset(0, 8),
+                          spreadRadius: -5,
                         ),
                       ],
-                      image: const DecorationImage(
-                        image: AssetImage('assets/images/profile_placeholder.png'),
-                        fit: BoxFit.cover,
+                    ),
+                    clipBehavior: Clip.antiAlias,
+                    child: Image.asset(
+                      'assets/images/user_placeholder.png',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  // User Name
+                  Text(
+                    user.name,
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.cairo(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 26,
+                      height: 1.1,
+                    ),
+                  ),
+
+                  const SizedBox(height: 8),
+
+                  // Membership Type Tag
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(100),
+                      border: Border.all(
+                        color: AppColors.primary.withOpacity(0.3),
+                      ),
+                    ),
+                    child: Text(
+                      user.membershipType ?? "عضو عامل",
+                      style: GoogleFonts.cairo(
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
                       ),
                     ),
                   ),
-                  
+
                   const Spacer(),
-                  
-                  // User Info
-                  Column(
-                    children: [
-                      Text(
-                        user['membership_type'] ?? "عضو عامل",
-                        style: GoogleFonts.cairo(
-                          color: Colors.white70,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 2,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        user['name'],
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.cairo(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w900,
-                          fontSize: 24,
-                          height: 1.2,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      _buildVerticalCardData("رقم العضوية", user['id']),
-                      _buildVerticalCardData("صالح حتى", user['expiry_date']),
-                    ],
-                  ),
-                  
-                  const Spacer(flex: 2),
-                  
-                  // QR Code
+
+                  // Membership Details Box
                   Container(
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.03),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: Colors.white.withOpacity(0.05)),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        _buildStatItem("رقم العضوية", user.id),
+                        Container(width: 1, height: 30, color: Colors.white12),
+                        _buildStatItem(
+                          "تاريخ الانتهاء",
+                          "2025/12/31",
+                        ), // Placeholder or user.expiryDate if exists
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  // Digital Signature / QR Area
+                  Container(
+                    padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: const [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.15),
+                          color: Colors.black26,
                           blurRadius: 10,
-                          offset: const Offset(0, 5),
+                          offset: Offset(0, 4),
                         ),
                       ],
                     ),
-                    child: const DynamicQrWidget(memberId: "12345678", size: 100, onlyQr: true),
+                    child: DynamicQrWidget(
+                      memberId: user.id,
+                      size: 80,
+                      onlyQr: true,
+                    ),
                   ),
                 ],
               ),
@@ -345,49 +320,22 @@ class _MembershipCardScreenState extends State<MembershipCardScreen> {
     );
   }
 
-  Widget _buildVerticalCardData(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            "$label: ",
-            style: GoogleFonts.cairo(color: Colors.white60, fontSize: 13, fontWeight: FontWeight.bold),
+  Widget _buildStatItem(String label, String value) {
+    return Column(
+      children: [
+        Text(
+          label,
+          style: GoogleFonts.cairo(color: Colors.white54, fontSize: 10),
+        ),
+        Text(
+          value,
+          style: GoogleFonts.inter(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
           ),
-          Text(
-            value,
-            style: GoogleFonts.cairo(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 13),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCardData(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 2),
-      child: Row(
-        children: [
-          Text(
-            "$label: ",
-            style: GoogleFonts.cairo(
-              color: Colors.white60, 
-              fontSize: 11, 
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1,
-            ),
-          ),
-          Text(
-            value,
-            style: GoogleFonts.cairo(
-              color: Colors.white, 
-              fontWeight: FontWeight.w600, 
-              fontSize: 11,
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -395,18 +343,23 @@ class _MembershipCardScreenState extends State<MembershipCardScreen> {
     return Row(
       children: [
         Container(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: AppColors.primary.withOpacity(0.1),
-            shape: BoxShape.circle,
+            borderRadius: BorderRadius.circular(12),
           ),
-          child: Icon(icon, color: AppColors.primary, size: 22),
+          child: Icon(icon, color: AppColors.primary, size: 24),
         ),
         const SizedBox(width: 16),
         Expanded(
           child: Text(
             text,
-            style: GoogleFonts.cairo(fontSize: 14, color: AppColors.textPrimary, fontWeight: FontWeight.w500),
+            style: GoogleFonts.cairo(
+              fontSize: 14,
+              color: Colors.white.withOpacity(0.7),
+              fontWeight: FontWeight.w500,
+              height: 1.5,
+            ),
           ),
         ),
       ],

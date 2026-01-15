@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sca_members_clubs/core/theme/app_colors.dart';
@@ -19,7 +18,9 @@ class GatePassScreen extends StatelessWidget {
         final String memberType = userData?['membership_type'] ?? "عضو عامل";
 
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Scaffold(body: Center(child: CircularProgressIndicator()));
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
         }
 
         return Scaffold(
@@ -42,7 +43,10 @@ class GatePassScreen extends StatelessWidget {
                 children: [
                   Container(
                     margin: const EdgeInsets.symmetric(horizontal: 24),
-                    padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 32,
+                      horizontal: 24,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(24),
@@ -60,7 +64,11 @@ class GatePassScreen extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(Icons.verified_user, color: AppColors.success, size: 24),
+                            const Icon(
+                              Icons.verified_user,
+                              color: AppColors.success,
+                              size: 24,
+                            ),
                             const SizedBox(width: 8),
                             Text(
                               "تصريح دخول إلكتروني",
@@ -73,7 +81,7 @@ class GatePassScreen extends StatelessWidget {
                           ],
                         ),
                         const Divider(height: 32),
-                        
+
                         Text(
                           memberName,
                           textAlign: TextAlign.center,
@@ -91,7 +99,7 @@ class GatePassScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 32),
-                        
+
                         // Dynamic QR
                         DynamicQrWidget(memberId: memberId),
                       ],
@@ -99,7 +107,7 @@ class GatePassScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 32),
                   Text(
-                    "نادي هيئة قناة السويس",
+                    "النادي العام لهيئة قناة السويس",
                     style: GoogleFonts.cairo(
                       color: Colors.white70,
                       fontSize: 14,

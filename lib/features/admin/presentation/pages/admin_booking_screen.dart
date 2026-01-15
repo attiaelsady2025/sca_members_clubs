@@ -1,9 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sca_members_clubs/core/theme/app_colors.dart';
 import 'package:sca_members_clubs/core/services/firebase_service.dart';
-import 'package:sca_members_clubs/core/widgets/sca_app_bar.dart';
 
 class AdminBookingScreen extends StatefulWidget {
   const AdminBookingScreen({super.key});
@@ -58,10 +56,7 @@ class _AdminBookingScreenState extends State<AdminBookingScreen> {
           ),
         ),
         body: TabBarView(
-          children: [
-            _buildFacilitiesList(),
-            _buildBookingsList(),
-          ],
+          children: [_buildFacilitiesList(), _buildBookingsList()],
         ),
       ),
     );
@@ -71,7 +66,9 @@ class _AdminBookingScreenState extends State<AdminBookingScreen> {
     return FutureBuilder<List<Map<String, dynamic>>>(
       future: _courtsFuture,
       builder: (context, snapshot) {
-        if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
         return ListView.separated(
           padding: const EdgeInsets.all(16),
           itemCount: snapshot.data!.length,
@@ -87,10 +84,12 @@ class _AdminBookingScreenState extends State<AdminBookingScreen> {
               ),
               child: Row(
                 children: [
-                   CircleAvatar(
+                  CircleAvatar(
                     backgroundColor: AppColors.primary.withOpacity(0.1),
                     child: Icon(
-                      court['type'] == 'tennis' ? Icons.sports_tennis : Icons.sports_soccer,
+                      court['type'] == 'tennis'
+                          ? Icons.sports_tennis
+                          : Icons.sports_soccer,
                       color: AppColors.primary,
                     ),
                   ),
@@ -99,8 +98,19 @@ class _AdminBookingScreenState extends State<AdminBookingScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(court['name'], style: GoogleFonts.cairo(fontWeight: FontWeight.bold)),
-                        Text(court['type'] == 'tennis' ? "ملعب تنس" : "ملعب كرة قدم", style: GoogleFonts.cairo(fontSize: 12, color: Colors.grey)),
+                        Text(
+                          court['name'],
+                          style: GoogleFonts.cairo(fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          court['type'] == 'tennis'
+                              ? "ملعب تنس"
+                              : "ملعب كرة قدم",
+                          style: GoogleFonts.cairo(
+                            fontSize: 12,
+                            color: Colors.grey,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -119,11 +129,17 @@ class _AdminBookingScreenState extends State<AdminBookingScreen> {
     return StatefulBuilder(
       builder: (context, setState) => Row(
         children: [
-          Text(isAvailable ? "متاح" : "مغلق", style: GoogleFonts.cairo(fontSize: 12, color: isAvailable ? Colors.green : Colors.red)),
+          Text(
+            isAvailable ? "متاح" : "مغلق",
+            style: GoogleFonts.cairo(
+              fontSize: 12,
+              color: isAvailable ? Colors.green : Colors.red,
+            ),
+          ),
           Switch(
-            value: isAvailable, 
+            value: isAvailable,
             onChanged: (val) => setState(() => isAvailable = val),
-            activeColor: Colors.green,
+            activeThumbColor: Colors.green,
           ),
         ],
       ),
@@ -134,7 +150,9 @@ class _AdminBookingScreenState extends State<AdminBookingScreen> {
     return FutureBuilder<List<Map<String, dynamic>>>(
       future: _bookingsFuture,
       builder: (context, snapshot) {
-        if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
         return ListView.separated(
           padding: const EdgeInsets.all(16),
           itemCount: snapshot.data!.length,
@@ -154,18 +172,43 @@ class _AdminBookingScreenState extends State<AdminBookingScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(booking['service_name'], style: GoogleFonts.cairo(fontWeight: FontWeight.bold)),
+                      Text(
+                        booking['service_name'],
+                        style: GoogleFonts.cairo(fontWeight: FontWeight.bold),
+                      ),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                        decoration: BoxDecoration(color: Colors.blue.withOpacity(0.1), borderRadius: BorderRadius.circular(6)),
-                        child: Text(booking['status'], style: GoogleFonts.cairo(fontSize: 10, color: Colors.blue, fontWeight: FontWeight.bold)),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.blue.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          booking['status'],
+                          style: GoogleFonts.cairo(
+                            fontSize: 10,
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 8),
-                  Text("التاريخ: ${booking['date']} - ${booking['time']}", style: GoogleFonts.cairo(fontSize: 12, color: Colors.grey)),
+                  Text(
+                    "التاريخ: ${booking['date']} - ${booking['time']}",
+                    style: GoogleFonts.cairo(fontSize: 12, color: Colors.grey),
+                  ),
                   const SizedBox(height: 4),
-                  Text("السعر: ${booking['price']}", style: GoogleFonts.cairo(fontSize: 12, fontWeight: FontWeight.bold)),
+                  Text(
+                    "السعر: ${booking['price']}",
+                    style: GoogleFonts.cairo(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ],
               ),
             );

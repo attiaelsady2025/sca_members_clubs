@@ -2,317 +2,308 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sca_members_clubs/core/theme/app_colors.dart';
 import 'package:sca_members_clubs/features/membership/presentation/widgets/dynamic_qr_widget.dart';
+import 'package:sca_members_clubs/features/profile/domain/entities/family_member.dart';
 
-class FamilyMembershipCardScreen extends StatefulWidget {
-  const FamilyMembershipCardScreen({super.key});
+class FamilyMembershipCardScreen extends StatelessWidget {
+  final FamilyMember? member;
+  const FamilyMembershipCardScreen({super.key, this.member});
 
-  @override
-  State<FamilyMembershipCardScreen> createState() => _FamilyMembershipCardScreenState();
-}
-
-class _FamilyMembershipCardScreenState extends State<FamilyMembershipCardScreen> {
   @override
   Widget build(BuildContext context) {
-    // Receive family member data from arguments
-    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>? ?? {};
-    final member = args['member'] as Map<String, dynamic>? ?? args; // Handle both direct member and wrapped args
-    final clubName = args['clubName'] as String? ?? "نادي هيئة قناة السويس";
+    // Receive family member entity from arguments if not provided in constructor
+    final effectiveMember =
+        member ?? ModalRoute.of(context)?.settings.arguments as FamilyMember?;
+    final clubName = "النادي العام لهيئة قناة السويس";
 
-    final Color clubColor = AppColors.primary;
+    if (effectiveMember == null) {
+      return Scaffold(
+        backgroundColor: const Color(0xFF0F172A),
+        appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0),
+        body: const Center(
+          child: Text(
+            "خطأ في تحميل بيانات التابع",
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      );
+    }
+
+    final memberToUse = effectiveMember;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F7FA),
+      backgroundColor: const Color(0xFF0F172A), // Darker Navy
       appBar: AppBar(
-        title: Text("كارنيه تابع (${member['relation'] ?? 'قريب'})"),
+        title: Text(
+          "بطاقة تابع (${memberToUse.relation})",
+          style: GoogleFonts.cairo(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
-        foregroundColor: Colors.black,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 24),
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
         child: Column(
           children: [
-            // The ID Card
-            _buildCarnet(context, member, clubName, clubColor),
-            
-            const SizedBox(height: 32),
+            // Premium ID Card
+            _buildPremiumCarnet(memberToUse, clubName),
 
-            // Report Lost Button
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                onPressed: () => _showReportLostDialog(context, member['name'] ?? "العضو"),
-                icon: const Icon(Icons.report_problem_outlined, size: 18),
-                label: Text("إبلاغ عن فقدان الكارنيه", style: GoogleFonts.cairo(fontWeight: FontWeight.bold)),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColors.error,
-                  side: const BorderSide(color: AppColors.error),
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                ),
-              ),
-            ),
+            const SizedBox(height: 40),
 
-            const SizedBox(height: 32),
-            
-            // Instructions / Info
+            // Instructions / Info with Modern Glass Look
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.03),
-                    blurRadius: 15,
-                    offset: const Offset(0, 8),
-                  ),
-                ],
+                color: Colors.white.withOpacity(0.05),
+                borderRadius: BorderRadius.circular(30),
+                border: Border.all(color: Colors.white.withOpacity(0.1)),
               ),
               child: Column(
                 children: [
-                  _buildInfoRow(Icons.qr_code_scanner, "هذا الكود مخصص لدخول التابع للمنشآت المسموح بها"),
-                  const Divider(height: 32),
-                  _buildInfoRow(Icons.family_restroom, "هذا الكارنيه مخصص لدرجة القرابة الموضحة"),
-                  const Divider(height: 32),
-                  _buildInfoRow(Icons.verified_user, "يجب إبراز هذا الكارنيه عند الطلب من أمن النادي"),
+                  _buildInfoRow(
+                    Icons.qr_code_2_rounded,
+                    "هذا الكود مخصص لدخول التابع للمنشآت والنوادي التابعة للهيئة.",
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 20),
+                    child: Divider(color: Colors.white12, height: 1),
+                  ),
+                  _buildInfoRow(
+                    Icons.family_restroom_rounded,
+                    "يجب أن يكون التابع مرافقاً للعضو الأساسي أو يحمل تفويضاً سارياً.",
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 20),
+                    child: Divider(color: Colors.white12, height: 1),
+                  ),
+                  _buildInfoRow(
+                    Icons.info_outline_rounded,
+                    "يرجى إبراز هذه البطاقة الرقمية لموظفي أمن البوابات عند الطلب.",
+                  ),
                 ],
               ),
             ),
+            const SizedBox(height: 30),
           ],
         ),
       ),
     );
   }
 
-  void _showReportLostDialog(BuildContext context, String name) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Text(
-          "إبلاغ عن فقدان",
-          textAlign: TextAlign.center,
-          style: GoogleFonts.cairo(fontWeight: FontWeight.bold, color: AppColors.error),
-        ),
-        content: Text(
-          "هل أنت متأكد من الإبلاغ عن فقدان كارنيه ($name)؟ سيتم إيقاف فاعلية الكود الرقمي فوراً.",
-          textAlign: TextAlign.center,
-          style: GoogleFonts.cairo(),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text("إلغاء", style: GoogleFonts.cairo(color: Colors.grey)),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              _handleReportSuccess();
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.error,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            ),
-            child: Text("تأكيد الإبلاغ", style: GoogleFonts.cairo(color: Colors.white)),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _handleReportSuccess() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          "تم تسجيل البلاغ بنجاح. يرجى مراجعة إدارة شؤون العضوية.",
-          style: GoogleFonts.cairo(),
-        ),
-        backgroundColor: AppColors.error,
-        duration: const Duration(seconds: 4),
-      ),
-    );
-  }
-
-  Widget _buildCarnet(BuildContext context, Map<String, dynamic> member, String clubName, Color color) {
+  Widget _buildPremiumCarnet(FamilyMember member, String clubName) {
     return AspectRatio(
-      aspectRatio: 0.7,
+      aspectRatio: 0.63,
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(28),
-          gradient: LinearGradient(
-            colors: [color.withBlue(100), color],
+          borderRadius: BorderRadius.circular(32),
+          gradient: const LinearGradient(
+            colors: [
+              Color(0xFF334155),
+              Color(0xFF0F172A),
+            ], // Slightly different gray-navy for family
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
           boxShadow: [
             BoxShadow(
-              color: color.withOpacity(0.4),
-              blurRadius: 30,
-              offset: const Offset(0, 15),
+              color: AppColors.primary.withOpacity(0.2),
+              blurRadius: 40,
+              offset: const Offset(0, 20),
             ),
           ],
+          border: Border.all(color: Colors.white.withOpacity(0.1)),
         ),
         clipBehavior: Clip.antiAlias,
         child: Stack(
           children: [
-            // Watermark Mesh Pattern
-            Opacity(
-              opacity: 0.12,
-              child: GridView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
-                itemBuilder: (context, index) => const Icon(Icons.anchor, color: Colors.white, size: 50),
-              ),
-            ),
-            
-            // Glossy Overlay
             Positioned(
-              top: -150,
-              right: -150,
+              top: -50,
+              left: -50,
               child: Container(
-                width: 400,
-                height: 400,
+                width: 250,
+                height: 250,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
-                    colors: [Colors.white.withOpacity(0.2), Colors.transparent],
+                    colors: [
+                      AppColors.primary.withOpacity(0.1),
+                      Colors.transparent,
+                    ],
                   ),
                 ),
               ),
             ),
-            
+
+            // SCA Watermark (Centered & Ghosted)
+            Center(
+              child: Opacity(
+                opacity: 0.04,
+                child: Image.asset(
+                  'assets/images/logo.png',
+                  width: 380,
+                  color: Colors.white,
+                  colorBlendMode: BlendMode.srcIn,
+                  errorBuilder: (context, error, stackTrace) =>
+                      const Icon(Icons.anchor, size: 300, color: Colors.white),
+                ),
+              ),
+            ),
+
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
               child: Column(
                 children: [
-                  // Upper Header
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      const Icon(Icons.anchor, color: Colors.white, size: 32),
                       Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Row(
-                            children: [
-                              const Icon(Icons.anchor, color: Colors.white, size: 28),
-                              const SizedBox(width: 8),
-                              Text(
-                                "هيئة قناة السويس",
-                                style: GoogleFonts.cairo(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w900,
-                                  fontSize: 16,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ],
+                          Text(
+                            "هيئة قناة السويس",
+                            style: GoogleFonts.cairo(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w900,
+                              fontSize: 16,
+                            ),
                           ),
                           Text(
-                            clubName.replaceAll(RegExp(r'\(.*\)'), '').trim(),
-                            style: GoogleFonts.cairo(
-                              color: Colors.white.withOpacity(0.9),
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
+                            "Suez Canal Authority",
+                            style: GoogleFonts.inter(
+                              color: Colors.white54,
+                              fontSize: 10,
                             ),
                           ),
                         ],
                       ),
-                      // Smart Chip Icon
-                      Container(
-                        width: 48,
-                        height: 38,
-                        decoration: BoxDecoration(
-                          color: Colors.amber,
-                          borderRadius: BorderRadius.circular(8),
-                          gradient: LinearGradient(
-                            colors: [Colors.amber[300]!, Colors.amber[700]!],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                        ),
-                        child: Icon(Icons.memory, color: Colors.amber[100], size: 22),
-                      ),
                     ],
                   ),
-                  
-                  const Spacer(flex: 2),
-                  
-                  // Profile Photo
+
+                  const SizedBox(height: 16),
+
+                  // Photo Frame
                   Container(
-                    width: 130,
+                    width: 120,
                     height: 150,
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.white.withOpacity(0.5), width: 3),
+                      border: Border.all(
+                        color: AppColors.primary.withOpacity(0.5),
+                        width: 2,
+                      ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
+                          color: Colors.black.withOpacity(0.5),
                           blurRadius: 15,
-                          offset: const Offset(0, 8),
+                          spreadRadius: -5,
                         ),
                       ],
-                      image: DecorationImage(
-                        image: (member['image'] != null && member['image'] is String && (member['image'] as String).startsWith('assets')) 
-                          ? AssetImage(member['image']) as ImageProvider
-                          : const AssetImage('assets/images/user_placeholder.png'),
-                        fit: BoxFit.cover,
+                    ),
+                    clipBehavior: Clip.antiAlias,
+                    child:
+                        member.image.isNotEmpty &&
+                            member.image.startsWith('assets')
+                        ? Image.asset(member.image, fit: BoxFit.cover)
+                        : const Icon(
+                            Icons.person_rounded,
+                            color: Colors.grey,
+                            size: 80,
+                          ),
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  Text(
+                    member.name,
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.cairo(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 26,
+                      height: 1.1,
+                    ),
+                  ),
+
+                  const SizedBox(height: 8),
+
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(100),
+                      border: Border.all(
+                        color: AppColors.primary.withOpacity(0.3),
+                      ),
+                    ),
+                    child: Text(
+                      member.relation,
+                      style: GoogleFonts.cairo(
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
                       ),
                     ),
                   ),
-                  
+
                   const Spacer(),
-                  
-                  // User Data
-                  Column(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                        margin: const EdgeInsets.only(bottom: 8),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text(
-                          "كارنيه عائلي (${member['relation'] ?? 'تابع'})",
-                          style: GoogleFonts.cairo(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      Text(
-                        member['name'] ?? "غير معروف",
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.cairo(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w900,
-                          fontSize: 24,
-                          height: 1.2,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      _buildVerticalCardData("رقم العضوية", member['id'] ?? "---"),
-                      _buildVerticalCardData("صالح حتى", member['expiry_date'] ?? "12/2026"),
-                    ],
-                  ),
-                  
-                  const Spacer(flex: 2),
-                  
-                  // QR Code
+
                   Container(
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.03),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: Colors.white.withOpacity(0.05)),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        _buildStatItem("رقم التابع", member.id),
+                        Container(width: 1, height: 30, color: Colors.white12),
+                        _buildStatItem(
+                          "تاريخ الانتهاء",
+                          member.expiryDate.isNotEmpty
+                              ? member.expiryDate
+                              : "---",
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  Container(
+                    padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: const [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.15),
+                          color: Colors.black26,
                           blurRadius: 10,
-                          offset: const Offset(0, 5),
+                          offset: Offset(0, 4),
                         ),
                       ],
                     ),
-                    child: DynamicQrWidget(memberId: member['id'] ?? "0000", size: 90, onlyQr: true),
+                    child: DynamicQrWidget(
+                      memberId: member.id,
+                      size: 80,
+                      onlyQr: true,
+                    ),
                   ),
                 ],
               ),
@@ -323,43 +314,45 @@ class _FamilyMembershipCardScreenState extends State<FamilyMembershipCardScreen>
     );
   }
 
-  Widget _buildVerticalCardData(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            "$label: ",
-            style: GoogleFonts.cairo(color: Colors.white60, fontSize: 12, fontWeight: FontWeight.bold),
+  Widget _buildStatItem(String label, String value) {
+    return Column(
+      children: [
+        Text(
+          label,
+          style: GoogleFonts.cairo(color: Colors.white54, fontSize: 10),
+        ),
+        Text(
+          value,
+          style: GoogleFonts.inter(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
           ),
-          Text(
-            value,
-            style: GoogleFonts.cairo(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 12),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
+
   Widget _buildInfoRow(IconData icon, String text) {
     return Row(
       children: [
         Container(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: AppColors.primary.withOpacity(0.1),
-            shape: BoxShape.circle,
+            borderRadius: BorderRadius.circular(12),
           ),
-          child: Icon(icon, color: AppColors.primary, size: 22),
+          child: Icon(icon, color: AppColors.primary, size: 24),
         ),
         const SizedBox(width: 16),
         Expanded(
           child: Text(
             text,
             style: GoogleFonts.cairo(
-              fontSize: 14, 
-              color: AppColors.textPrimary,
+              fontSize: 14,
+              color: Colors.white.withOpacity(0.7),
               fontWeight: FontWeight.w500,
+              height: 1.5,
             ),
           ),
         ),

@@ -4,6 +4,7 @@ import 'package:sca_members_clubs/core/theme/app_colors.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sca_members_clubs/features/dining/presentation/cubit/dining_cubit.dart';
 import 'package:sca_members_clubs/features/dining/presentation/cubit/dining_state.dart';
+import 'package:sca_members_clubs/features/dining/domain/entities/restaurant.dart';
 import 'package:sca_members_clubs/core/di/injection_container.dart';
 
 class DiningScreen extends StatelessWidget {
@@ -11,8 +12,11 @@ class DiningScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final clubId =
+        ModalRoute.of(context)?.settings.arguments as String? ?? "c1";
+
     return BlocProvider(
-      create: (context) => sl<DiningCubit>()..loadRestaurants(clubId: "c1"),
+      create: (context) => sl<DiningCubit>()..loadRestaurants(clubId: clubId),
       child: const DiningView(),
     );
   }
@@ -38,13 +42,20 @@ class DiningView extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
           if (state is DiningError) {
-            return Center(child: Text(state.message, style: GoogleFonts.cairo()));
+            return Center(
+              child: Text(state.message, style: GoogleFonts.cairo()),
+            );
           }
           if (state is DiningLoaded) {
             final restaurants = state.restaurants;
 
             if (restaurants.isEmpty) {
-              return Center(child: Text("لا توجد مطاعم متاحة حالياً", style: GoogleFonts.cairo()));
+              return Center(
+                child: Text(
+                  "لا توجد مطاعم متاحة حالياً",
+                  style: GoogleFonts.cairo(),
+                ),
+              );
             }
 
             return ListView.separated(
@@ -63,7 +74,7 @@ class DiningView extends StatelessWidget {
     );
   }
 
-  Widget _buildRestaurantCard(BuildContext context, Map<String, dynamic> restaurant) {
+  Widget _buildRestaurantCard(BuildContext context, Restaurant restaurant) {
     return GestureDetector(
       onTap: () {
         Navigator.pushNamed(context, '/menu', arguments: restaurant);
@@ -73,11 +84,11 @@ class DiningView extends StatelessWidget {
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
-             BoxShadow(
+            BoxShadow(
               color: Colors.black.withOpacity(0.05),
               blurRadius: 15,
               offset: const Offset(0, 5),
-            )
+            ),
           ],
         ),
         clipBehavior: Clip.antiAlias,
@@ -99,7 +110,7 @@ class DiningView extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        restaurant['name'],
+                        restaurant.name,
                         style: GoogleFonts.cairo(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -107,17 +118,24 @@ class DiningView extends StatelessWidget {
                         ),
                       ),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.amber.withOpacity(0.2),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Row(
                           children: [
-                            const Icon(Icons.star, size: 16, color: Colors.amber),
+                            const Icon(
+                              Icons.star,
+                              size: 16,
+                              color: Colors.amber,
+                            ),
                             const SizedBox(width: 4),
                             Text(
-                              "${restaurant['rating']}",
+                              "${restaurant.rating}",
                               style: GoogleFonts.cairo(
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
@@ -131,32 +149,46 @@ class DiningView extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                     restaurant['description'],
-                     style: GoogleFonts.cairo(
-                       fontSize: 14,
-                       color: AppColors.textSecondary,
-                     ),
-                     maxLines: 1,
-                     overflow: TextOverflow.ellipsis,
+                    restaurant.description,
+                    style: GoogleFonts.cairo(
+                      fontSize: 14,
+                      color: AppColors.textSecondary,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 16),
                   Row(
                     children: [
-                      const Icon(Icons.access_time, size: 16, color: Colors.grey),
+                      const Icon(
+                        Icons.access_time,
+                        size: 16,
+                        color: Colors.grey,
+                      ),
                       const SizedBox(width: 4),
                       Text(
-                        restaurant['delivery_time'],
-                         style: GoogleFonts.cairo(fontSize: 12, color: Colors.grey),
+                        restaurant.deliveryTime,
+                        style: GoogleFonts.cairo(
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
                       ),
                       const SizedBox(width: 16),
-                      const Icon(Icons.delivery_dining, size: 16, color: Colors.grey),
+                      const Icon(
+                        Icons.delivery_dining,
+                        size: 16,
+                        color: Colors.grey,
+                      ),
                       const SizedBox(width: 4),
                       Text(
                         "توصيل مجاني",
-                         style: GoogleFonts.cairo(fontSize: 12, color: Colors.grey),
+                        style: GoogleFonts.cairo(
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
                       ),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),

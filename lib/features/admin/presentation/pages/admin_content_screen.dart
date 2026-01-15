@@ -1,9 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sca_members_clubs/core/theme/app_colors.dart';
 import 'package:sca_members_clubs/core/services/firebase_service.dart';
-import 'package:sca_members_clubs/core/widgets/sca_app_bar.dart';
 
 class AdminContentScreen extends StatefulWidget {
   const AdminContentScreen({super.key});
@@ -57,12 +55,7 @@ class _AdminContentScreenState extends State<AdminContentScreen> {
             ],
           ),
         ),
-        body: TabBarView(
-          children: [
-            _buildNewsList(),
-            _buildPromosList(),
-          ],
-        ),
+        body: TabBarView(children: [_buildNewsList(), _buildPromosList()]),
         floatingActionButton: FloatingActionButton(
           onPressed: () {}, // Add new content logic
           backgroundColor: AppColors.primary,
@@ -76,7 +69,9 @@ class _AdminContentScreenState extends State<AdminContentScreen> {
     return FutureBuilder<List<Map<String, dynamic>>>(
       future: _newsFuture,
       builder: (context, snapshot) {
-        if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
         return ListView.separated(
           padding: const EdgeInsets.all(16),
           itemCount: snapshot.data!.length,
@@ -106,13 +101,35 @@ class _AdminContentScreenState extends State<AdminContentScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(item['title'], style: GoogleFonts.cairo(fontWeight: FontWeight.bold, fontSize: 13)),
-                        Text(item['date'] ?? "", style: GoogleFonts.cairo(fontSize: 10, color: Colors.grey)),
+                        Text(
+                          item['title'],
+                          style: GoogleFonts.cairo(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                          ),
+                        ),
+                        Text(
+                          item['date'] ?? "",
+                          style: GoogleFonts.cairo(
+                            fontSize: 10,
+                            color: Colors.grey,
+                          ),
+                        ),
                       ],
                     ),
                   ),
-                  IconButton(icon: const Icon(Icons.edit, size: 20), onPressed: () {}),
-                  IconButton(icon: const Icon(Icons.delete_outline, size: 20, color: Colors.red), onPressed: () {}),
+                  IconButton(
+                    icon: const Icon(Icons.edit, size: 20),
+                    onPressed: () {},
+                  ),
+                  IconButton(
+                    icon: const Icon(
+                      Icons.delete_outline,
+                      size: 20,
+                      color: Colors.red,
+                    ),
+                    onPressed: () {},
+                  ),
                 ],
               ),
             );
@@ -126,7 +143,9 @@ class _AdminContentScreenState extends State<AdminContentScreen> {
     return FutureBuilder<List<Map<String, dynamic>>>(
       future: _promosFuture,
       builder: (context, snapshot) {
-        if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
         return ListView.separated(
           padding: const EdgeInsets.all(16),
           itemCount: snapshot.data!.length,
@@ -142,27 +161,54 @@ class _AdminContentScreenState extends State<AdminContentScreen> {
               ),
               child: Row(
                 children: [
-                   Container(
+                  Container(
                     width: 60,
                     height: 60,
                     decoration: BoxDecoration(
-                      color: Color(int.parse(item['color'] ?? "0xFF808080")).withOpacity(0.2),
+                      color: Color(
+                        int.parse(item['color'] ?? "0xFF808080"),
+                      ).withOpacity(0.2),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: Icon(Icons.star, color: Color(int.parse(item['color'] ?? "0xFF808080"))),
+                    child: Icon(
+                      Icons.star,
+                      color: Color(int.parse(item['color'] ?? "0xFF808080")),
+                    ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(item['title'], style: GoogleFonts.cairo(fontWeight: FontWeight.bold, fontSize: 13)),
-                        Text(item['subtitle'] ?? "", style: GoogleFonts.cairo(fontSize: 10, color: Colors.grey)),
+                        Text(
+                          item['title'],
+                          style: GoogleFonts.cairo(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                          ),
+                        ),
+                        Text(
+                          item['subtitle'] ?? "",
+                          style: GoogleFonts.cairo(
+                            fontSize: 10,
+                            color: Colors.grey,
+                          ),
+                        ),
                       ],
                     ),
                   ),
-                  IconButton(icon: const Icon(Icons.edit, size: 20), onPressed: () {}),
-                  IconButton(icon: const Icon(Icons.delete_outline, size: 20, color: Colors.red), onPressed: () {}),
+                  IconButton(
+                    icon: const Icon(Icons.edit, size: 20),
+                    onPressed: () {},
+                  ),
+                  IconButton(
+                    icon: const Icon(
+                      Icons.delete_outline,
+                      size: 20,
+                      color: Colors.red,
+                    ),
+                    onPressed: () {},
+                  ),
                 ],
               ),
             );

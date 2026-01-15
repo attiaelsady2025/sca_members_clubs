@@ -1,9 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:sca_members_clubs/core/theme/app_colors.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:sca_members_clubs/core/widgets/primary_button.dart';
-import '../widgets/payment_history_item.dart';
 
 class PaymentsScreen extends StatelessWidget {
   const PaymentsScreen({super.key});
@@ -47,63 +44,80 @@ class PaymentsScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                   Row(
-                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                     children: [
-                       const Icon(Icons.credit_card, color: Colors.white, size: 30),
-                       Container(
-                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                         decoration: BoxDecoration(
-                           color: Colors.white.withOpacity(0.2),
-                           borderRadius: BorderRadius.circular(20),
-                         ),
-                         child: Text(
-                           "اشتراك سنوي",
-                           style: GoogleFonts.cairo(color: Colors.white, fontSize: 12),
-                         ),
-                       ),
-                     ],
-                   ),
-                   Column(
-                     crossAxisAlignment: CrossAxisAlignment.start,
-                     children: [
-                       Text(
-                         "تاريخ الانتهاء",
-                         style: GoogleFonts.cairo(color: Colors.white70, fontSize: 12),
-                       ),
-                       Text(
-                         "31/12/2026",
-                         style: GoogleFonts.cairo(
-                           color: Colors.white,
-                           fontSize: 20,
-                           fontWeight: FontWeight.bold,
-                           letterSpacing: 2,
-                         ),
-                       ),
-                     ],
-                   ),
-                   SizedBox(
-                     width: double.infinity,
-                     child: ElevatedButton(
-                       onPressed: () {},
-                       style: ElevatedButton.styleFrom(
-                         backgroundColor: AppColors.accent,
-                         foregroundColor: AppColors.textPrimary,
-                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                         padding: const EdgeInsets.symmetric(vertical: 0), // Compact
-                       ),
-                       child: Text(
-                         "تجديد الاشتراك الآن",
-                         style: GoogleFonts.cairo(fontWeight: FontWeight.bold),
-                       ),
-                     ),
-                   ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Icon(
+                        Icons.credit_card,
+                        color: Colors.white,
+                        size: 30,
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          "اشتراك سنوي",
+                          style: GoogleFonts.cairo(
+                            color: Colors.white,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "تاريخ الانتهاء",
+                        style: GoogleFonts.cairo(
+                          color: Colors.white70,
+                          fontSize: 12,
+                        ),
+                      ),
+                      Text(
+                        "31/12/2026",
+                        style: GoogleFonts.cairo(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 2,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.accent,
+                        foregroundColor: AppColors.textPrimary,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 0,
+                        ), // Compact
+                      ),
+                      child: Text(
+                        "تجديد الاشتراك الآن",
+                        style: GoogleFonts.cairo(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
-            
+
             const SizedBox(height: 32),
-            
+
             Text(
               "سجل المدفوعات",
               style: GoogleFonts.cairo(
@@ -113,7 +127,7 @@ class PaymentsScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            
+
             // List
             ListView.builder(
               shrinkWrap: true,
@@ -133,7 +147,9 @@ class PaymentsScreen extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: index == 0 ? AppColors.success.withOpacity(0.1) : Colors.grey.withOpacity(0.1),
+                          color: index == 0
+                              ? AppColors.success.withOpacity(0.1)
+                              : Colors.grey.withOpacity(0.1),
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
@@ -148,11 +164,17 @@ class PaymentsScreen extends StatelessWidget {
                           children: [
                             Text(
                               "تجديد اشتراك سنوي",
-                              style: GoogleFonts.cairo(fontWeight: FontWeight.bold, fontSize: 16),
+                              style: GoogleFonts.cairo(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
                             ),
                             Text(
-                              "01/01/202${6-index}",
-                              style: GoogleFonts.cairo(color: Colors.grey, fontSize: 14),
+                              "01/01/202${6 - index}",
+                              style: GoogleFonts.cairo(
+                                color: Colors.grey,
+                                fontSize: 14,
+                              ),
                             ),
                           ],
                         ),

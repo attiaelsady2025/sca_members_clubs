@@ -18,42 +18,52 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
+      backgroundColor: AppColors.primary,
+      elevation: 4,
+      shadowColor: AppColors.primary.withOpacity(0.3),
       centerTitle: true,
       titleSpacing: 0,
       leading: Builder(
         builder: (context) => IconButton(
-          icon: const Icon(Icons.menu, color: Colors.white),
+          icon: const Icon(
+            Icons.menu_open_rounded,
+            color: Colors.white,
+            size: 28,
+          ),
           onPressed: () => Scaffold.of(context).openDrawer(),
         ),
       ),
       title: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.15),
-          borderRadius: BorderRadius.circular(20),
+          color: Colors.white.withOpacity(0.12),
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: Colors.white.withOpacity(0.1)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.anchor, size: 18, color: Colors.white),
-            const SizedBox(width: 8),
-            Flexible(
-              child: Text(
-                clubName,
-                overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.cairo(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                  color: Colors.white,
-                ),
+            Container(
+              padding: const EdgeInsets.all(4),
+              decoration: const BoxDecoration(
+                color: AppColors.accent,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.anchor_rounded,
+                size: 14,
+                color: AppColors.primary,
               ),
             ),
             const SizedBox(width: 8),
-            GestureDetector(
-              onTap: onMapTap,
-              child: const Icon(Icons.location_on, size: 18, color: AppColors.accent),
+            Text(
+              "الصفحة الرئيسية",
+              style: GoogleFonts.cairo(
+                fontWeight: FontWeight.w800,
+                fontSize: 14,
+                color: Colors.white,
+                letterSpacing: 0.1,
+              ),
             ),
           ],
         ),
@@ -63,58 +73,62 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
           future: FirebaseService().getUnreadNotificationsCount(),
           builder: (context, snapshot) {
             final count = snapshot.data ?? 0;
-            return Stack(
-              children: [
-                IconButton(
-                  onPressed: onNotificationsTap,
-                  icon: const Icon(Icons.notifications_outlined, color: Colors.white),
-                ),
-                if (count > 0)
-                  Positioned(
-                    right: 8,
-                    top: 8,
-                    child: Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: const BoxDecoration(
-                        color: Colors.red,
-                        shape: BoxShape.circle,
-                      ),
-                      constraints: const BoxConstraints(
-                        minWidth: 16,
-                        minHeight: 16,
-                      ),
-                      child: Text(
-                        count > 9 ? '+9' : count.toString(),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
+            return Container(
+              margin: const EdgeInsets.only(left: 4),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  IconButton(
+                    onPressed: onNotificationsTap,
+                    icon: const Icon(
+                      Icons.notifications_none_rounded,
+                      color: Colors.white,
+                      size: 26,
                     ),
                   ),
-              ],
+                  if (count > 0)
+                    Positioned(
+                      right: 10,
+                      top: 10,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: AppColors.error,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: AppColors.primary,
+                            width: 2,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.2),
+                              blurRadius: 4,
+                            ),
+                          ],
+                        ),
+                        constraints: const BoxConstraints(
+                          minWidth: 18,
+                          minHeight: 18,
+                        ),
+                        child: Text(
+                          count > 9 ? '9+' : count.toString(),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 9,
+                            fontWeight: FontWeight.w900,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
             );
-          }
+          },
         ),
       ],
-      flexibleSpace: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [AppColors.primary, AppColors.secondary],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.vertical(bottom: Radius.circular(24)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black26,
-              blurRadius: 10,
-              offset: Offset(0, 4),
-            ),
-          ],
-        ),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(bottom: Radius.circular(24)),
       ),
     );
   }

@@ -4,6 +4,8 @@ import 'package:sca_members_clubs/core/theme/app_colors.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sca_members_clubs/features/news/presentation/cubit/news_cubit.dart';
 import 'package:sca_members_clubs/features/news/presentation/cubit/news_state.dart';
+import 'package:sca_members_clubs/features/news/domain/entities/news_article.dart';
+import 'package:sca_members_clubs/features/news/domain/entities/event.dart';
 import 'package:sca_members_clubs/core/di/injection_container.dart';
 import '../widgets/news_card.dart';
 import '../widgets/event_card.dart';
@@ -15,7 +17,8 @@ class NewsScreen extends StatefulWidget {
   State<NewsScreen> createState() => _NewsScreenState();
 }
 
-class _NewsScreenState extends State<NewsScreen> with SingleTickerProviderStateMixin {
+class _NewsScreenState extends State<NewsScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -60,7 +63,9 @@ class _NewsScreenState extends State<NewsScreen> with SingleTickerProviderStateM
               return const Center(child: CircularProgressIndicator());
             }
             if (state is NewsError) {
-              return Center(child: Text(state.message, style: GoogleFonts.cairo()));
+              return Center(
+                child: Text(state.message, style: GoogleFonts.cairo()),
+              );
             }
             if (state is NewsLoaded) {
               return TabBarView(
@@ -78,7 +83,7 @@ class _NewsScreenState extends State<NewsScreen> with SingleTickerProviderStateM
     );
   }
 
-  Widget _buildNewsList(List<Map<String, dynamic>> newsList) {
+  Widget _buildNewsList(List<NewsArticle> newsList) {
     return ListView.separated(
       padding: const EdgeInsets.all(20),
       itemCount: newsList.length,
@@ -86,23 +91,19 @@ class _NewsScreenState extends State<NewsScreen> with SingleTickerProviderStateM
       itemBuilder: (context, index) {
         final item = newsList[index];
         return NewsCard(
-          title: item['title'],
-          date: item['date'],
-          description: item['description'],
-          imageUrl: item['image'],
+          title: item.title,
+          date: item.date,
+          description: item.description,
+          imageUrl: item.image,
           onTap: () {
-            Navigator.pushNamed(
-              context, 
-              '/article_detail',
-              arguments: item,
-            );
+            Navigator.pushNamed(context, '/article_detail', arguments: item);
           },
         );
       },
     );
   }
 
-  Widget _buildEventsList(List<Map<String, dynamic>> eventsList) {
+  Widget _buildEventsList(List<Event> eventsList) {
     return ListView.separated(
       padding: const EdgeInsets.all(20),
       itemCount: eventsList.length,
@@ -110,17 +111,13 @@ class _NewsScreenState extends State<NewsScreen> with SingleTickerProviderStateM
       itemBuilder: (context, index) {
         final item = eventsList[index];
         return EventCard(
-          title: item['title'],
-          date: item['date'],
-          time: item['time'],
-          location: item['location'],
-          price: item['price'],
+          title: item.title,
+          date: item.date,
+          time: item.time,
+          location: item.location,
+          price: item.price,
           onTap: () {
-            Navigator.pushNamed(
-              context, 
-              '/article_detail',
-              arguments: item,
-            );
+            Navigator.pushNamed(context, '/article_detail', arguments: item);
           },
         );
       },

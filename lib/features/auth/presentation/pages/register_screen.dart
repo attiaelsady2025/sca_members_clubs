@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:sca_members_clubs/core/theme/app_colors.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -38,7 +37,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     Row(
                       children: [
                         IconButton(
-                          icon: const Icon(Icons.arrow_back, color: Colors.white),
+                          icon: const Icon(
+                            Icons.arrow_back,
+                            color: Colors.white,
+                          ),
                           onPressed: () => Navigator.pop(context),
                         ),
                         Expanded(
@@ -67,7 +69,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
               margin: const EdgeInsets.only(top: 80), // Overlap header
               child: Theme(
                 data: Theme.of(context).copyWith(
-                  colorScheme: const ColorScheme.light(primary: AppColors.primary),
+                  colorScheme: const ColorScheme.light(
+                    primary: AppColors.primary,
+                  ),
                   canvasColor: AppColors.background,
                 ),
                 child: Stepper(
@@ -79,7 +83,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       setState(() => _currentStep += 1);
                     } else {
                       // Submit Logic
-                      Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        '/home',
+                        (route) => false,
+                      );
                     }
                   },
                   onStepCancel: () {
@@ -97,13 +105,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               onPressed: details.onStepContinue,
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppColors.primary,
-                                padding: const EdgeInsets.symmetric(vertical: 12),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
                                 elevation: 0,
                               ),
                               child: Text(
                                 _currentStep == 2 ? "تأكيد التسجيل" : "التالي",
-                                style: GoogleFonts.cairo(color: Colors.white, fontWeight: FontWeight.bold),
+                                style: GoogleFonts.cairo(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                           ),
@@ -113,13 +128,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               child: OutlinedButton(
                                 onPressed: details.onStepCancel,
                                 style: OutlinedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12,
+                                  ),
                                   side: const BorderSide(color: Colors.grey),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
                                 ),
                                 child: Text(
                                   "السابق",
-                                  style: GoogleFonts.cairo(color: Colors.black87),
+                                  style: GoogleFonts.cairo(
+                                    color: Colors.black87,
+                                  ),
                                 ),
                               ),
                             ),
@@ -139,28 +160,48 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         _buildTextField("رقم الهاتف", Icons.phone),
                       ]),
                       isActive: _currentStep >= 0,
-                      state: _currentStep > 0 ? StepState.complete : StepState.indexed,
+                      state: _currentStep > 0
+                          ? StepState.complete
+                          : StepState.indexed,
                     ),
-                      Step(
+                    Step(
                       title: const Text("العضوية"),
                       content: _buildCard([
-                         _buildTextField("رقم العضوية (إن وجد)", Icons.card_membership),
-                         const SizedBox(height: 16),
-                         _buildTextField("رقم العمل", Icons.work),
-                         const SizedBox(height: 16),
-                         _buildDropdown("نوع العضوية", Icons.category, ["عضو عامل", "عضو تابع", "عضو معاشات", "عضو خارجى"]),
-                         const SizedBox(height: 16),
-                         _buildTextField("البريد الإلكتروني", Icons.email),
+                        _buildTextField(
+                          "رقم العضوية (إن وجد)",
+                          Icons.card_membership,
+                        ),
+                        const SizedBox(height: 16),
+                        _buildTextField("رقم العمل", Icons.work),
+                        const SizedBox(height: 16),
+                        _buildDropdown("نوع العضوية", Icons.category, [
+                          "عضو عامل",
+                          "عضو تابع",
+                          "عضو معاشات",
+                          "عضو خارجى",
+                        ]),
+                        const SizedBox(height: 16),
+                        _buildTextField("البريد الإلكتروني", Icons.email),
                       ]),
                       isActive: _currentStep >= 1,
-                      state: _currentStep > 1 ? StepState.complete : StepState.indexed,
+                      state: _currentStep > 1
+                          ? StepState.complete
+                          : StepState.indexed,
                     ),
                     Step(
                       title: const Text("كلمة المرور"),
                       content: _buildCard([
-                        _buildTextField("كلمة المرور", Icons.lock, isPassword: true),
+                        _buildTextField(
+                          "كلمة المرور",
+                          Icons.lock,
+                          isPassword: true,
+                        ),
                         const SizedBox(height: 16),
-                        _buildTextField("تأكيد كلمة المرور", Icons.lock_clock, isPassword: true),
+                        _buildTextField(
+                          "تأكيد كلمة المرور",
+                          Icons.lock_clock,
+                          isPassword: true,
+                        ),
                       ]),
                       isActive: _currentStep >= 2,
                     ),
@@ -192,7 +233,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  Widget _buildTextField(String label, IconData icon, {bool isPassword = false}) {
+  Widget _buildTextField(
+    String label,
+    IconData icon, {
+    bool isPassword = false,
+  }) {
     return TextFormField(
       obscureText: isPassword,
       decoration: InputDecoration(
@@ -219,8 +264,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Widget _buildDropdown(String label, IconData icon, List<String> items) {
     return DropdownButtonFormField<String>(
-      value: items.first,
-      items: items.map((item) => DropdownMenuItem(value: item, child: Text(item, style: GoogleFonts.cairo()))).toList(),
+      initialValue: items.first,
+      items: items
+          .map(
+            (item) => DropdownMenuItem(
+              value: item,
+              child: Text(item, style: GoogleFonts.cairo()),
+            ),
+          )
+          .toList(),
       onChanged: (val) {},
       decoration: InputDecoration(
         labelText: label,

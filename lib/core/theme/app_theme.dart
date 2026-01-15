@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'app_colors.dart';
@@ -19,8 +18,6 @@ class AppTheme {
         onSurface: AppColors.textPrimary,
         tertiary: AppColors.accent,
         onTertiary: Colors.white,
-        background: AppColors.background, // Deprecated in recent Flutter but still used in some places/compat
-        onBackground: AppColors.textPrimary,
       ),
       scaffoldBackgroundColor: AppColors.background,
       textTheme: GoogleFonts.cairoTextTheme().apply(
@@ -35,7 +32,8 @@ class AppTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary, // Gold highlights are specific, primary is default
+          backgroundColor: AppColors
+              .primary, // Gold highlights are specific, primary is default
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
@@ -52,11 +50,15 @@ class AppTheme {
         fillColor: Colors.white,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.textSecondary.withOpacity(0.2)),
+          borderSide: BorderSide(
+            color: AppColors.textSecondary.withOpacity(0.2),
+          ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.textSecondary.withOpacity(0.2)),
+          borderSide: BorderSide(
+            color: AppColors.textSecondary.withOpacity(0.2),
+          ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -66,7 +68,10 @@ class AppTheme {
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: AppColors.error),
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
       ),
     );
   }

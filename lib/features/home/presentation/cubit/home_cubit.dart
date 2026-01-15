@@ -1,6 +1,6 @@
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sca_members_clubs/core/services/firebase_service.dart';
+import 'package:sca_members_clubs/features/news/data/models/news_article_model.dart';
 import 'home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
@@ -17,11 +17,11 @@ class HomeCubit extends Cubit<HomeState> {
         _firebaseService.getPromos(),
       ]);
 
-      emit(HomeLoaded(
-        clubs: results[0] as List<Map<String, dynamic>>,
-        news: results[1] as List<Map<String, dynamic>>,
-        promos: results[2] as List<Map<String, dynamic>>,
-      ));
+      final newsList = (results[1] as List)
+          .map((e) => NewsArticleModel.fromMap(e as Map<String, dynamic>))
+          .toList();
+
+      emit(HomeLoaded(clubs: results[0], news: newsList, promos: results[2]));
     } catch (e) {
       emit(HomeError(e.toString()));
     }
